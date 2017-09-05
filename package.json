@@ -1,0 +1,81 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "dyn-mocker",
+        "scope": null,
+        "escapedName": "dyn-mocker",
+        "name": "dyn-mocker",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\src"
+    ]
+  ],
+  "_from": "dyn-mocker@latest",
+  "_id": "dyn-mocker@1.0.0",
+  "_inCache": true,
+  "_location": "/dyn-mocker",
+  "_nodeVersion": "4.2.3",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/dyn-mocker-1.0.0.tgz_1504426277573_0.7806719830259681"
+  },
+  "_npmUser": {
+    "name": "hzsrc",
+    "email": "hz932@qq.com"
+  },
+  "_npmVersion": "5.3.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "dyn-mocker",
+    "scope": null,
+    "escapedName": "dyn-mocker",
+    "name": "dyn-mocker",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.0.tgz",
+  "_shasum": "f7585bbbd9911f39bc9b1ee0ce2d5e391e9abb57",
+  "_shrinkwrap": null,
+  "_spec": "dyn-mocker",
+  "_where": "D:\\src",
+  "author": {
+    "name": "HuangZheng"
+  },
+  "dependencies": {
+    "http-proxy": "^1.12.0",
+    "js-yaml": "^3.9.1"
+  },
+  "description": "A dyn-mock server for front-end development",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-8sGKHSIz3RwWi8hQSu7xFuOJYnXP5WWqxi5Bpa8BHYcPisguxB6w1HerHVm09yq3+MAVJaC8ZCAq5AcX6lfz7w==",
+    "shasum": "f7585bbbd9911f39bc9b1ee0ce2d5e391e9abb57",
+    "tarball": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.0.tgz"
+  },
+  "email": "hz932@qq.com",
+  "keywords": [],
+  "license": "Mit",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "hzsrc",
+      "email": "hz932@qq.com"
+    }
+  ],
+  "name": "dyn-mocker",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}

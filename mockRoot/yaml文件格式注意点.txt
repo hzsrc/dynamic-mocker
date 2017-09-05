@@ -1,0 +1,19 @@
+1、键名称的冒号后面，必须有一个空格
+2、多行文本值，需要加一个 | 符号，并且要向右缩进
+3、status默认为200，headers默认为Content-Type: application/json; charset=utf-8。可省略。
+
+举例:
+disabled: false
+status: 200
+headers:
+  X-Header: header-value
+# This is a comment
+body: |
+  {
+      ret: 1,
+      obj: {
+          target: "index2.html",
+          todo: 0,
+          msg: null
+      }
+  }
