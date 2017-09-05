@@ -37,9 +37,15 @@ function onHandle(req, res) {
 
     //由JSP或ASP.Net、PHP服务处理
     function proxyWeb() {
-        console.log('proxy:\t' + pathname);
-        req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
-        proxy.web(req, res, {target: config.proxyTarget});
+    	if(config.proxyTarget){
+	        console.log('proxy:\t' + pathname);
+	        req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
+	        proxy.web(req, res, {target: config.proxyTarget});
+	    }
+	    else{
+	    	res.writeHead(404, {});
+        	res.end('NOT FOUND');
+	    }
     }
 }
 
