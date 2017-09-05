@@ -77,6 +77,8 @@ function mockFn(req, res, mockFile, next) {
     parseBody(ymlData, req, go);
 
     function go(body){
+		ymlData.body = body;
+		config.beforeResponse && config.beforeResponse(ymlData, req);
         console.log('mock:\t' + req.url);
         res.writeHead(ymlData.status, ymlData.headers);
         res.end(body);
