@@ -17,6 +17,6 @@ module.exports = function createServer(isHttps, port, onHandle){
         http.createServer(options, onHandle).listen(port);
     }
     var url = "http"+(isHttps ? "s" : "")+"://localhost:" + port;
-    console.log("Static file server running at\n  => "+url+"/\n   " + "\nCTRL + C to shutdown");
+    console.log("Http server running at\n  => " + url + "/\n   " + "\nCTRL + C to shutdown");
     //opn(url)
 }

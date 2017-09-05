@@ -2,7 +2,11 @@ var path = require('path'), fs = require('fs');
 var url = require('url'), querystring =  require('querystring');
 var yaml = require('js-yaml');
 var createServer = require('./create-server.js')
-var config =require('./config.js')
+var config = (function(){
+	var fn = process.argv[2];
+	var fn = fn ? path.resolve(fn) : './config.js';
+	return require(fn);
+}) ()
 
 var proxy = require('http-proxy').createProxyServer({});
 proxy.on('error', function (err, req, res, target) {
@@ -10,7 +14,9 @@ proxy.on('error', function (err, req, res, target) {
     res.end(err.message);
 });
 var _proxyHost = url.parse(config.proxyTarget).hostname;
+
 //启动服务
+console.log('Mock root path: ' + path.resolve(config.mockPath))
 createServer(config.isHttps, config.port, onHandle);
 
 
