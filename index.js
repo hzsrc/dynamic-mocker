@@ -16,14 +16,14 @@ proxy.on('error', function (err, req, res, target) {
 var _proxyHost = url.parse(config.proxyTarget).hostname;
 
 //启动服务
+process.title = "dyn-mocker";
 console.log('Mock root path: ' + path.resolve(config.mockPath))
 createServer(config.isHttps, config.port, onHandle);
-
 
 function onHandle(req, res) {
     var urlPart = url.parse(req.url);
     var pathname = urlPart.pathname;
-    if (config.checkPath(pathname)) {
+    if (config.mockEnabled && config.checkPath(pathname)) {
         //ajax请求
         var mockFile = path.join(config.mockPath, pathname + '.yml');
         if (fs.existsSync(mockFile)) {
@@ -68,7 +68,7 @@ function mockFn(req, res, mockFile, next) {
         ymlData.headers['content-type'] = 'application/json; charset=utf-8';
     }
     if (!ymlData.headers['cache-control']) {
-        ymlData.headers['cache-control'] = 'no-cache';
+        //ymlData.headers['cache-control'] = 'no-cache';
     }
     if (ymlData.status === undefined) {
         ymlData.status = 200
