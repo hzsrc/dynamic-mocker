@@ -49,7 +49,9 @@ function onHandle(req, res) {
 	        proxy.web(req, res, {target: config.proxyTarget});
 	    }
 	    else{
-	    	res.writeHead(404, {});
+            var resp ={headers: {}}
+            config.beforeResponse && config.beforeResponse(resp, req);
+	    	res.writeHead(404, resp.headers);
         	res.end('NOT FOUND');
 	    }
     }
@@ -61,61 +63,65 @@ function mockFn(req, res, mockFile, next) {
     if (ymlData.disabled) {
         return next();
     }
-    if (!ymlData.headers) {
-        ymlData.headers = {};
-    }
-    if (!ymlData.headers['content-type']) {
-        ymlData.headers['content-type'] = 'application/json; charset=utf-8';
-    }
-    if (!ymlData.headers['cache-control']) {
-        //ymlData.headers['cache-control'] = 'no-cache';
-    }
-    if (ymlData.status === undefined) {
-        ymlData.status = 200
-    }
 
-    parseBody(ymlData, req, go);
+    readPost(req, post =>{
+        var qs = querystring.parse(url.parse(req.url).query);
+        parseBody(ymlData, qs, post, req)
+        parseHeader(ymlData, qs, post, req);
 
-    function go(body){
-		ymlData.body = body;
-		config.beforeResponse && config.beforeResponse(ymlData, req);
+        config.beforeResponse && config.beforeResponse(ymlData, req);
         console.log('mock:\t' + req.url);
+
         res.writeHead(ymlData.status, ymlData.headers);
-        res.end(body);
-    }
+        res.end(ymlData.body);
+    })
 }
 
-function parseBody(ymlData, req, callback){
+function parseBody(ymlData, qs, post, req){
 	var body = ymlData.body;
     if (typeof body !== "string") {
-        body = JSON.stringify(body, null, 2);
+        ymlData.body = JSON.stringify(body, null, 2);
     }
     else{
         try {
             var val = eval("(" + body + ")");
             if(typeof val == 'function'){
-                callYmlFunc(val, ymlData, req, go);
+                val = callFn(val, ymlData, qs, post, req);
             }
-            else {
-                go(val)
-            }
-            return; //须返回，避免重复callback
-
-            function go(ret){
-                if (typeof ret != 'string'){
-                    ret = JSON.stringify(ret);//为键名加上引号。同时可支持js函数、表达式，而不仅仅是json
-                }
-                callback(ret);
-            }
+            ymlData.body = JSON.stringify(val, null, 2);
         }
         catch (e) {//非json数据返回原样
         }
     }
-    callback(body);
 }
 
-function callYmlFunc(fn, ymlData, req, callback){
-    var qs = querystring.parse(url.parse(req.url).query);
+function parseHeader(ymlData, qs, post, req){
+    var headers = ymlData.headers;
+    if (!headers) {
+        headers = {};
+    }
+    else if(typeof headers == 'string'){
+        try{
+            var fn = eval("(" + headers + ")");
+            headers = callFn(fn, ymlData, qs, post, req);
+        }
+        catch(e){
+            console.error(e);
+            headers = {};
+        }
+    }
+    //默认值
+    var defaultHeader = {
+        "content-type": 'application/json; charset=utf-8',
+        //"cache-control": 'no-cache',
+    };
+    if(!ymlData.status){
+        ymlData.status = 200;
+    }
+    ymlData.headers = Object.assign({}, defaultHeader, headers);
+}
+
+function readPost(req, callback){
     if(req.method == 'POST'){
       var qBody = '';
       req.on('data', function(data) {
@@ -129,20 +135,20 @@ function callYmlFunc(fn, ymlData, req, callback){
             }
             catch(e){}
         }
-        callFn(qBody)
+        callback(qBody)
       });
     }
     else{
-        callFn(null)
+        callback({})
     }
+}
 
-    function callFn(qBody){
-        try{
-            var r = fn.call(ymlData, qs, qBody, req.headers, req);
-        }
-        catch(e){
-            r = "ERR in yml func: " + e + "\n" + fn.toString()
-        }
-        callback(r);
+function callFn(fn, ymlData, qs, post, req){
+    try{
+        return fn.call(ymlData, qs, post, req.headers, req);
+    }
+    catch(e){
+        r = "ERR in yml func: " + "\n" + fn.toString()
+        console.error(e);
     }
 }
