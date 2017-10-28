@@ -6,7 +6,7 @@ Please see the [sample project](https://github.com/hzsrc/dyn-mocker-sample) in s
 
 ## 1. install
 	npm i dyn-mocker -D
-####or
+#### or
 	yarn add dyn-mocker --dev
 
 ## 2. configuration
@@ -54,7 +54,7 @@ Edit the mock-config.js options:
 	npm run mock
 
 ## 6. Create yaml files for dyn-mocker in the mock/root directory
-###Simple yml file:
+### Simple yml file:
 	# dyn-mocker use json eval mode, but not JSON.parse
 	disabled: 0
 	body: |
@@ -66,7 +66,7 @@ Edit the mock-config.js options:
 	        name:'张三丰',
 	    }
 	  }
-###Yml file with javascript functions:
+### Yml file with javascript functions:
 	disabled: 0
 	body: |
 	  function(query, post, header, request){
@@ -95,8 +95,7 @@ Edit the mock-config.js options:
 	case_2: |
 	  {a:3,b:"test"}
 
-###Another yml:
-
+### Another yml:
 	disabled: 0
 	status: 200
 	headers: |
