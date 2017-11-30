@@ -1,6 +1,6 @@
 var path = require('path'), fs = require('fs');
 var url = require('url'), querystring =  require('querystring');
-var yaml = require('js-yaml');
+//var yaml = require('js-yaml');
 var createServer = require('./create-server.js')
 var config = (function(){
 	var fn = process.argv[2];
@@ -59,51 +59,52 @@ function onHandle(req, res) {
 
 //使用yaml文件模拟内容输出
 function mockFn(req, res, mockFile, next) {
-    var ymlData = yaml.load(fs.readFileSync(mockFile)) || {};
-    if (ymlData.disabled) {
+    var js = '(function(){var exports={},module={exports:exports};'+ fs.readFileSync(mockFile) + ';return module.exports})()';
+    var mockData = eval(js) || {};
+    if (mockData.disabled) {
         return next();
     }
 
     readPost(req, post =>{
         var qs = querystring.parse(url.parse(req.url).query);
-        parseBody(ymlData, qs, post, req)
-        parseHeader(ymlData, qs, post, req);
+        parseBody(mockData, qs, post, req)
+        parseHeader(mockData, qs, post, req);
 
-        config.beforeResponse && config.beforeResponse(ymlData, req);
+        config.beforeResponse && config.beforeResponse(mockData, req);
         console.log('mock:\t' + req.url);
 
-        res.writeHead(ymlData.status, ymlData.headers);
-        res.end(ymlData.body);
+        res.writeHead(mockData.status, mockData.headers);
+        res.end(mockData.body);
     })
 }
 
-function parseBody(ymlData, qs, post, req){
-	var body = ymlData.body;
+function parseBody(mockData, qs, post, req){
+	var body = mockData.body;
     if (typeof body !== "string") {
-        ymlData.body = JSON.stringify(body, null, 2);
+        mockData.body = JSON.stringify(body, null, 2);
     }
     else{
         try {
             var val = eval("(" + body + ")");
             if(typeof val == 'function'){
-                val = callFn(val, ymlData, qs, post, req);
+                val = callFn(val, mockData, qs, post, req);
             }
-            ymlData.body = JSON.stringify(val, null, 2);
+            mockData.body = JSON.stringify(val, null, 2);
         }
         catch (e) {//非json数据返回原样
         }
     }
 }
 
-function parseHeader(ymlData, qs, post, req){
-    var headers = ymlData.headers;
+function parseHeader(mockData, qs, post, req){
+    var headers = mockData.headers;
     if (!headers) {
         headers = {};
     }
     else if(typeof headers == 'string'){
         try{
             var fn = eval("(" + headers + ")");
-            headers = callFn(fn, ymlData, qs, post, req);
+            headers = callFn(fn, mockData, qs, post, req);
         }
         catch(e){
             console.error(e);
@@ -115,10 +116,10 @@ function parseHeader(ymlData, qs, post, req){
         "content-type": 'application/json; charset=utf-8',
         //"cache-control": 'no-cache',
     };
-    if(!ymlData.status){
-        ymlData.status = 200;
+    if(!mockData.status){
+        mockData.status = 200;
     }
-    ymlData.headers = Object.assign({}, defaultHeader, headers);
+    mockData.headers = Object.assign({}, defaultHeader, headers);
 }
 
 function readPost(req, callback){
@@ -143,9 +144,9 @@ function readPost(req, callback){
     }
 }
 
-function callFn(fn, ymlData, qs, post, req){
+function callFn(fn, mockData, qs, post, req){
     try{
-        return fn.call(ymlData, qs, post, req.headers, req);
+        return fn.call(mockData, qs, post, req.headers, req);
     }
     catch(e){
         r = "ERR in yml func: " + "\n" + fn.toString()

@@ -11,40 +11,54 @@
         "type": "tag"
       },
       "D:\\src"
+    ],
+    [
+      {
+        "raw": "dyn-mocker@latest",
+        "scope": null,
+        "escapedName": "dyn-mocker",
+        "name": "dyn-mocker",
+        "rawSpec": "latest",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\src\\ep61"
     ]
   ],
   "_from": "dyn-mocker@latest",
-  "_id": "dyn-mocker@1.0.0",
+  "_id": "dyn-mocker@1.0.2",
   "_inCache": true,
   "_location": "/dyn-mocker",
-  "_nodeVersion": "4.2.3",
+  "_nodeVersion": "8.7.0",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/dyn-mocker-1.0.0.tgz_1504426277573_0.7806719830259681"
+    "tmp": "tmp/dyn-mocker-1.0.2.tgz_1509173769174_0.03193098772317171"
   },
   "_npmUser": {
     "name": "hzsrc",
     "email": "hz932@qq.com"
   },
-  "_npmVersion": "5.3.0",
-  "_phantomChildren": {},
+  "_npmVersion": "5.4.2",
+  "_phantomChildren": {
+    "argparse": "1.0.9"
+  },
   "_requested": {
-    "raw": "dyn-mocker",
+    "raw": "dyn-mocker@latest",
     "scope": null,
     "escapedName": "dyn-mocker",
     "name": "dyn-mocker",
-    "rawSpec": "",
+    "rawSpec": "latest",
     "spec": "latest",
     "type": "tag"
   },
   "_requiredBy": [
-    "#USER"
+    "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.0.tgz",
-  "_shasum": "f7585bbbd9911f39bc9b1ee0ce2d5e391e9abb57",
+  "_resolved": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.2.tgz",
+  "_shasum": "5a5369da61262b2e553736e8f70553ece5160aaf",
   "_shrinkwrap": null,
-  "_spec": "dyn-mocker",
-  "_where": "D:\\src",
+  "_spec": "dyn-mocker@latest",
+  "_where": "D:\\src\\ep61",
   "author": {
     "name": "HuangZheng"
   },
@@ -56,15 +70,19 @@
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "integrity": "sha512-8sGKHSIz3RwWi8hQSu7xFuOJYnXP5WWqxi5Bpa8BHYcPisguxB6w1HerHVm09yq3+MAVJaC8ZCAq5AcX6lfz7w==",
-    "shasum": "f7585bbbd9911f39bc9b1ee0ce2d5e391e9abb57",
-    "tarball": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.0.tgz"
+    "integrity": "sha512-FYwTR97gVIKBewPPoYKyJdo03iyU/b73fIT5AYbYZWpw3RLoGRYyQGTWAj9qWQxhQ6k5QDPytBlAogK2NVkhWQ==",
+    "shasum": "5a5369da61262b2e553736e8f70553ece5160aaf",
+    "tarball": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.2.tgz"
   },
   "email": "hz932@qq.com",
   "keywords": [],
   "license": "Mit",
   "main": "index.js",
   "maintainers": [
+    {
+      "name": "hz932",
+      "email": "hz932@qq.com"
+    },
     {
       "name": "hzsrc",
       "email": "hz932@qq.com"
@@ -77,5 +95,5 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.0.1"
+  "version": "1.0.2"
 }
