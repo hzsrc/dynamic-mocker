@@ -25,7 +25,7 @@ function onHandle(req, res) {
     var pathname = urlPart.pathname;
     if (config.mockEnabled && config.checkPath(pathname)) {
         //ajax请求
-        var mockFile = path.join(config.mockPath, pathname + '.yml');
+        var mockFile = path.join(config.mockPath, pathname + '.js');
         if (fs.existsSync(mockFile)) {
             //模拟数据，从mock文件夹获取
             mockFn(req, res, mockFile, proxyWeb);
@@ -80,16 +80,13 @@ function mockFn(req, res, mockFile, next) {
 
 function parseBody(mockData, qs, post, req){
 	var body = mockData.body;
-    if (typeof body !== "string") {
-        mockData.body = JSON.stringify(body, null, 2);
+    if (typeof body !== "function") {
+        mockData.body = JSON.stringify(body, null, 4);
     }
     else{
         try {
-            var val = eval("(" + body + ")");
-            if(typeof val == 'function'){
-                val = callFn(val, mockData, qs, post, req);
-            }
-            mockData.body = JSON.stringify(val, null, 2);
+            body = callFn(body, mockData, qs, post, req);
+            mockData.body = JSON.stringify(body, null, 4);
         }
         catch (e) {//非json数据返回原样
         }
@@ -101,10 +98,9 @@ function parseHeader(mockData, qs, post, req){
     if (!headers) {
         headers = {};
     }
-    else if(typeof headers == 'string'){
+    else if(typeof headers == 'function'){
         try{
-            var fn = eval("(" + headers + ")");
-            headers = callFn(fn, mockData, qs, post, req);
+            headers = callFn(headers, mockData, qs, post, req);
         }
         catch(e){
             console.error(e);
@@ -149,7 +145,7 @@ function callFn(fn, mockData, qs, post, req){
         return fn.call(mockData, qs, post, req.headers, req);
     }
     catch(e){
-        r = "ERR in yml func: " + "\n" + fn.toString()
+        r = "ERR in js func: " + "\n" + fn.toString()
         console.error(e);
     }
 }
