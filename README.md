@@ -53,71 +53,102 @@ Edit the mock-config.js options:
 ## 5. Start mock server
 	npm run mock
 
-## 6. Create yaml files for dyn-mocker in the mock/root directory
-### Simple yml file:
-	# dyn-mocker use json eval mode, but not JSON.parse
-	disabled: 0
-	body: |
-	  {
-	    status:0,
-	    data:{
-	        id:1,
-	        tag:'This is a simple json data',
-	        name:'张三丰',
-	    }
-	  }
-### Yml file with javascript functions:
-	disabled: 0
-	body: |
-	  function(query, post, header, request){
-	    //output log in the node console
-	    console.log('post data: ' + post)
-	    
-	    //use queryString in url
-	    //use key word 'this', which point to the yaml root object
-	    if (query.id == '1') return ok(this.case_1);
-	    
-	    //use http postData
-	    if (post && post.type =='test') return ok(this.case_2);
-	    
-	    //use http headers
-	    if (header["content-type"] == "text/txt") return ok("Hello,txt")
-	    
-	    //use request info
-	    return ok({default:'no data', url: request.url})
-	
-	    function ok(d){
-	      return {status:0,data:d}
-	    }
-	  }
-	case_1: |
-	  {id:1,b:2}
-	case_2: |
-	  {a:3,b:"test"}
+## 6. Create js files for dyn-mocker in the mock/root directory
+### Simple js file:
+	// dyn-mocker use json eval mode, but not JSON.parse
+	module.export = {
+		disabled: 0,
+		status: 200,
+		"headers": {
+			"server": "dyn-mocker",
+			"set-cookie": "foo=bar; path=/",
+			"cache-control": "no-cache"
+		},
+		"body": {
+			"status": 0,
+			"obj": {
+				"cfg": {
+					"o": {
+						"buttons": [
+							{
+								"id": 1,
+								"title": "按钮1"
+							},
+							{
+								"id": 2,
+								"title": "按钮2"
+							}
+						]
+					}
+				}
+			},
+			"msg": ""
+		}
+	}
+### Js file with functions:
+    module.export = {
+        disabled: 0,
+        body: function (query, post, header, request) {
+            //output log in the node console
+            console.log('post data: ' + post)
+    
+            //use queryString in url
+            //use key word 'this', which point to the yaml root object
+            if (query.id == '1') return ok(this.case_1);
+    
+            //use http postData
+            if (post && post.type == 'test') return ok(this.case_2);
+    
+            //use http headers
+            if (header["content-type"] == "text/txt") return ok("Hello,txt")
+    
+            //use request info
+            return ok({default: 'no data', url: request.url})
+    
+            function ok(d) {
+                return {status: 0, data: d}
+            }
+        },
+        case_1: {
+            id: 1,
+            b: 2
+        },
+        case_2: {
+            a: 3,
+            b: "test"
+        }
+    }
 
-### Another yml:
-	disabled: 0
-	status: 200
-	headers: |
-	  function(query, post, header, request){
-	    var r = {}
-	    if(eval(this.checkFn)(post, header)) {
-	      r['set-cookie'] = 'a=b; Max-Age=30000; path=/';
-	    }
-	    else{
-	      r['set-cookie'] = 'a=b; Max-Age=0; path=/';
-	    }
-	    return r;
-	  }
-	body: |
-	  function(query, post, header, request){
-	    return  {
-	      status: eval(this.checkFn)(post, header) ? 0 : 1,
-	      data: '', 
-	      msg: 'Invalid account or password!'
-	    }
-	  }
-	checkFn: |
-	  (function(post, header){
-	    if( post.password == '123' || post.password == '' ) return true;
-	  })
+
+### Another js:
+    module.exports = {
+        disabled: 0,
+        status: 200,
+        headers: function (query, post, header, request) {
+            var r = {}
+            if (post.rememberPwd && this.checkFn(post, header)) {
+                process._cookiev = 'a=b' + (+new Date);
+                r['set-cookie'] = process._cookiev + '; Max-Age=30000; path=/';
+            }
+            else {
+                process._cookiev = '';
+                r['set-cookie'] = process._cookiev + '; Max-Age=0; path=/';
+            }
+            return r;
+        },
+        body: function (query, post, header, request) {
+            return {
+                status: this.checkFn(post, header) ? 0 : 1,
+                data: '', returnValue: 'token-xxxxxxx',
+                msg: '用户名密码错误'
+            }
+        },
+        checkFn: function (post, header) {
+            if (post.password == '123456' || post.password == '') return true;
+    
+            if (post.useRemembered && post.password == '_fakepwd') {
+                var cookie = header['Cookie'] || header['cookie'];
+                return cookie && cookie.indexOf(process._cookiev) > -1
+            }
+        }
+    }
