@@ -1,12 +1,12 @@
 var path = require('path'), fs = require('fs');
-var url = require('url'), querystring =  require('querystring');
+var url = require('url'), querystring = require('querystring');
 //var yaml = require('js-yaml');
 var createServer = require('./create-server.js')
-var config = (function(){
-	var fn = process.argv[2];
-	var fn = fn ? path.resolve(fn) : './config.js';
-	return require(fn);
-}) ()
+var config = (function () {
+    var fn = process.argv[2];
+    var fn = fn ? path.resolve(fn) : './config.js';
+    return require(fn);
+})()
 
 var proxy = require('http-proxy').createProxyServer({});
 proxy.on('error', function (err, req, res, target) {
@@ -43,31 +43,33 @@ function onHandle(req, res) {
 
     //由JSP或ASP.Net、PHP服务处理
     function proxyWeb() {
-    	if(config.proxyTarget){
-	        console.log('proxy:\t' + pathname);
-	        req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
-	        proxy.web(req, res, {target: config.proxyTarget});
-	    }
-	    else{
-            var resp ={headers: {}}
+        if (config.proxyTarget) {
+            console.log('proxy:\t' + pathname);
+            req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
+            proxy.web(req, res, {target: config.proxyTarget});
+        }
+        else {
+            var resp = {headers: {}}
             config.beforeResponse && config.beforeResponse(resp, req);
-	    	res.writeHead(404, resp.headers);
-        	res.end('NOT FOUND');
-	    }
+            res.writeHead(404, resp.headers);
+            res.end('NOT FOUND');
+        }
     }
 }
 
 //使用yaml文件模拟内容输出
 function mockFn(req, res, mockFile, next) {
-    var js = '(function(){var exports={},module={exports:exports};'+ fs.readFileSync(mockFile) + ';return module.exports})()';
-    var mockData = eval(js) || {};
+    //var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(mockFile) + ';return module.exports})()';
+    mockFile = path.resolve(mockFile);
+    delete require.cache[mockFile]; //根据绝对路径，清空缓存的对象
+    var mockData = require(mockFile) || {};
     if (mockData.disabled) {
         return next();
     }
 
-    readPost(req, post =>{
+    readPost(req, post => {
         var qs = querystring.parse(url.parse(req.url).query);
-        parseBody(mockData, qs, post, req)
+        parseBody(mockData, qs, post, req);
         parseHeader(mockData, qs, post, req);
 
         config.beforeResponse && config.beforeResponse(mockData, req);
@@ -78,12 +80,12 @@ function mockFn(req, res, mockFile, next) {
     })
 }
 
-function parseBody(mockData, qs, post, req){
-	var body = mockData.body;
+function parseBody(mockData, qs, post, req) {
+    var body = mockData.body;
     if (typeof body !== "function") {
         mockData.body = JSON.stringify(body, null, 4);
     }
-    else{
+    else {
         try {
             body = callFn(body, mockData, qs, post, req);
             mockData.body = JSON.stringify(body, null, 4);
@@ -93,16 +95,16 @@ function parseBody(mockData, qs, post, req){
     }
 }
 
-function parseHeader(mockData, qs, post, req){
+function parseHeader(mockData, qs, post, req) {
     var headers = mockData.headers;
     if (!headers) {
         headers = {};
     }
-    else if(typeof headers == 'function'){
-        try{
+    else if (typeof headers == 'function') {
+        try {
             headers = callFn(headers, mockData, qs, post, req);
         }
-        catch(e){
+        catch (e) {
             console.error(e);
             headers = {};
         }
@@ -112,39 +114,40 @@ function parseHeader(mockData, qs, post, req){
         "content-type": 'application/json; charset=utf-8',
         //"cache-control": 'no-cache',
     };
-    if(!mockData.status){
+    if (!mockData.status) {
         mockData.status = 200;
     }
     mockData.headers = Object.assign({}, defaultHeader, headers);
 }
 
-function readPost(req, callback){
-    if(req.method == 'POST'){
-      var qBody = '';
-      req.on('data', function(data) {
-        qBody += data;
-      });
+function readPost(req, callback) {
+    if (req.method == 'POST') {
+        var qBody = '';
+        req.on('data', function (data) {
+            qBody += data;
+        });
 
-      req.on('end', function() {
-        if(qBody){
-            try{
-                qBody = eval('('+qBody+')'); //尝试将json字符串转为对象
+        req.on('end', function () {
+            if (qBody) {
+                try {
+                    qBody = eval('(' + qBody + ')'); //尝试将json字符串转为对象
+                }
+                catch (e) {
+                }
             }
-            catch(e){}
-        }
-        callback(qBody)
-      });
+            callback(qBody)
+        });
     }
-    else{
+    else {
         callback({})
     }
 }
 
-function callFn(fn, mockData, qs, post, req){
-    try{
+function callFn(fn, mockData, qs, post, req) {
+    try {
         return fn.call(mockData, qs, post, req.headers, req);
     }
-    catch(e){
+    catch (e) {
         r = "ERR in js func: " + "\n" + fn.toString()
         console.error(e);
     }
