@@ -80,18 +80,24 @@ function mockFn(req, res, mockFile, next) {
     })
 }
 
-function parseBody(mockData, qs, post, req) {
-    var body = mockData.body;
-    if (typeof body !== "function") {
-        mockData.body = JSON.stringify(body, null, 4);
-    }
-    else {
+function parseBody(mockData, qs, post, req){
+    if (typeof mockData.body == "function") {
         try {
-            body = callFn(body, mockData, qs, post, req);
-            mockData.body = JSON.stringify(body, null, 4);
+            mockData.body = callFn(mockData.body, mockData, qs, post, req);
         }
-        catch (e) {//非json数据返回原样
+        catch (e) {
+			console.error(e);
         }
+    }
+	
+	if(typeof mockData.body == 'object'){
+		mockData.body = JSON.stringify(mockData.body, null, 4);
+	}
+	if(mockData.body === undefined || mockData === null){
+		mockData.body = '';
+	}
+	if(typeof mockData.body != 'string'){
+        mockData.body = String(mockData.body);
     }
 }
 
