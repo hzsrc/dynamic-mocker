@@ -18,13 +18,34 @@ Please see the [sample project](https://github.com/hzsrc/dyn-mocker-sample) in s
 	--package.json
 
 ## 3. configuration
+### sample:
+	const config = {
+		mockEnabled: true,
+		mockPath: ['mock/root', 'mock/root-old'], //模拟文件根目录
+		proxyTarget: 'http://your-backend-server.com', //后台接口服务地址（代理目标），为空表示不代理
+		isHttps: false, //是否https
+		port: 8085, //端口
+		checkPath: function (urlPath) { //urlPath校验函数，返回true表示需要进行mock处理，为false直接走代理
+			return true
+		},
+		beforeResponse: function (respData, req) { //数据返回前的回调钩子，respData包含status、headers、body属性
+			respData.headers['Access-Control-Allow-Origin'] = req.headers['origin'] || req.headers['Origin'];
+			respData.headers['Access-Control-Allow-Credentials'] = 'true';
+			respData.headers['Access-Control-Max-Age'] = '600';
+			respData.headers['Access-Control-Allow-Headers'] = 'Content-Type,Content-Length,Authorization,Access,X-Requested-With,yxt-token';
+			//respData.headers["Access-Control-Allow-Methods"] = "PUT,POST,GET,DELETE,PATCH,OPTIONS";
+	
+			respData.headers['P3P'] = 'CP="CAO PSA OUR"';
+		}
+	}
+	module.exports = config;
+###
+
 Edit the mock-config.js options:
-
-
-### mockEnabled 
+### mockEnabled
 	[true] to enable it
 ### mockPath
-	the root path of mock files
+	the root path[s] of mock files. String or array of string.
 ### proxyTarget
 	If no mock file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy.
 ### isHttps
@@ -91,20 +112,20 @@ Edit the mock-config.js options:
         body: function (query, post, header, request) {
             //output log in the node console
             console.log('post data: ' + post)
-    
+
             //use queryString in url
             //use key word 'this', which point to the yaml root object
             if (query.id == '1') return ok(this.case_1);
-    
+
             //use http postData
             if (post && post.type == 'test') return ok(this.case_2);
-    
+
             //use http headers
             if (header["content-type"] == "text/txt") return ok("Hello,txt")
-    
+
             //use request info
             return ok({default: 'no data', url: request.url})
-    
+
             function ok(d) {
                 return {status: 0, data: d}
             }
@@ -145,7 +166,7 @@ Edit the mock-config.js options:
         },
         checkFn: function (post, header) {
             if (post.password == '123456' || post.password == '') return true;
-    
+
             if (post.useRemembered && post.password == '_fakepwd') {
                 var cookie = header['Cookie'] || header['cookie'];
                 return cookie && cookie.indexOf(process._cookiev) > -1

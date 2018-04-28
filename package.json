@@ -23,56 +23,73 @@
         "type": "tag"
       },
       "D:\\src\\ep61"
+    ],
+    [
+      {
+        "raw": "dyn-mocker@1.0.6",
+        "scope": null,
+        "escapedName": "dyn-mocker",
+        "name": "dyn-mocker",
+        "rawSpec": "1.0.6",
+        "spec": "1.0.6",
+        "type": "version"
+      },
+      "D:\\src\\eis-ePortal"
     ]
   ],
   "_from": "dyn-mocker@latest",
-  "_id": "dyn-mocker@1.0.2",
+  "_id": "dyn-mocker@1.0.8",
+  "_inBundle": false,
   "_inCache": true,
+  "_integrity": "sha1-Fi1fkrPsCJciTkAnuGsVwaA255s=",
   "_location": "/dyn-mocker",
-  "_nodeVersion": "8.7.0",
+  "_nodeVersion": "6.11.2",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/dyn-mocker-1.0.2.tgz_1509173769174_0.03193098772317171"
+    "tmp": "tmp/dyn-mocker-1.0.6.tgz_1512368734860_0.6393717809114605"
   },
   "_npmUser": {
     "name": "hzsrc",
     "email": "hz932@qq.com"
   },
-  "_npmVersion": "5.4.2",
+  "_npmVersion": "3.10.10",
   "_phantomChildren": {
     "argparse": "1.0.9"
   },
   "_requested": {
+    "type": "tag",
+    "registry": true,
     "raw": "dyn-mocker@latest",
-    "scope": null,
-    "escapedName": "dyn-mocker",
     "name": "dyn-mocker",
+    "escapedName": "dyn-mocker",
     "rawSpec": "latest",
-    "spec": "latest",
-    "type": "tag"
+    "saveSpec": null,
+    "fetchSpec": "latest"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.2.tgz",
-  "_shasum": "5a5369da61262b2e553736e8f70553ece5160aaf",
+  "_resolved": "http://registry.npm.taobao.org/dyn-mocker/download/dyn-mocker-1.0.8.tgz",
+  "_shasum": "162d5f92b3ec0897224e4027b86b15c1a036e79b",
   "_shrinkwrap": null,
   "_spec": "dyn-mocker@latest",
-  "_where": "D:\\src\\ep61",
+  "_where": "D:\\src\\eis-ePortal",
   "author": {
     "name": "HuangZheng"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "http-proxy": "^1.12.0",
     "js-yaml": "^3.9.1"
   },
+  "deprecated": false,
   "description": "A dyn-mock server for front-end development",
   "devDependencies": {},
   "directories": {},
   "dist": {
     "integrity": "sha512-FYwTR97gVIKBewPPoYKyJdo03iyU/b73fIT5AYbYZWpw3RLoGRYyQGTWAj9qWQxhQ6k5QDPytBlAogK2NVkhWQ==",
-    "shasum": "5a5369da61262b2e553736e8f70553ece5160aaf",
-    "tarball": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.2.tgz"
+    "shasum": "4855106ca6abd79c25cd9d1c885964945cd28b1e",
+    "tarball": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.6.tgz"
   },
   "email": "hz932@qq.com",
   "keywords": [],
@@ -90,10 +107,9 @@
   ],
   "name": "dyn-mocker",
   "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.0.6"
+  "version": "1.1.0"
 }

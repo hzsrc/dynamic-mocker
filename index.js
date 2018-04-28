@@ -1,39 +1,72 @@
 var path = require('path'), fs = require('fs');
 var url = require('url'), querystring = require('querystring');
 //var yaml = require('js-yaml');
-var createServer = require('./create-server.js')
-var config = (function () {
-    var fn = process.argv[2];
-    var fn = fn ? path.resolve(fn) : './config.js';
-    return require(fn);
-})()
 
-var proxy = require('http-proxy').createProxyServer({});
-proxy.on('error', function (err, req, res, target) {
-    console.log("[ERROR]:" + req.url + "\t" + err.message)
-    res.end(err.message);
-});
-var _proxyHost = url.parse(config.proxyTarget).hostname;
+var _proxyHost;
+var config, proxy, server;
 
 //启动服务
-process.title = "dyn-mocker";
-console.log('Mock root path: ' + path.resolve(config.mockPath))
-createServer(config.isHttps, config.port, onHandle);
+function loadConfig(fn) {
+    if (!config) {
+        var fn = fn ? path.resolve(fn) : './config.js';
+        config = require(fn);
+        _proxyHost = url.parse(config.proxyTarget).hostname
+    }
+}
+
+function start(configFile) {
+    loadConfig(configFile)
+    var createServer = require('./create-server.js')
+    process.title = 'dyn-mocker';
+    console.log('Current path: ' + __dirname + '\nMock root path: ' + config.mockPath)
+    return server = createServer(config.isHttps, config.port, onHandle);
+}
+
+function checkStart(configFile) {
+    loadConfig(configFile)
+    if (config.mockEnabled) {
+        start()
+    }
+}
+
+function getProxy() {
+    if (!proxy) {
+        proxy = require('http-proxy').createProxyServer({});
+        proxy.on('error', function (err, req, res, target) {
+            console.log('[ERROR]:' + req.url + '\t' + err.message)
+            res.end(err.message);
+        });
+    }
+    return proxy;
+}
 
 function onHandle(req, res) {
     var urlPart = url.parse(req.url);
     var pathname = urlPart.pathname;
     if (config.mockEnabled && config.checkPath(pathname)) {
-        //ajax请求
-        var mockFile = path.join(config.mockPath, pathname + '.js');
-        if (fs.existsSync(mockFile)) {
-            //模拟数据，从mock文件夹获取
-            mockFn(req, res, mockFile, proxyWeb);
+        var paths = config.mockPath;
+        if (typeof paths == 'string') {
+            paths = [paths];
         }
-        else {
-            //非模拟数据的ajax请求，代理给服务处理
-            proxyWeb();
-        }
+        var i = -1;
+        var next = function () {
+            i++;
+            if (i < paths.length) {
+                var mockFile = path.join(paths[i], pathname + '.js');
+                if (fs.existsSync(mockFile)) {
+                    //模拟数据，从mock文件夹获取
+                    mockFn(req, res, mockFile, next);
+                }
+                else {
+                    next()
+                }
+            }
+            else {
+                //非模拟数据的ajax请求，代理给服务处理
+                proxyWeb();
+            }
+        };
+        next();
     }
     else {
         //return false
@@ -46,7 +79,7 @@ function onHandle(req, res) {
         if (config.proxyTarget) {
             console.log('proxy:\t' + pathname);
             req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
-            proxy.web(req, res, {target: config.proxyTarget});
+            getProxy().web(req, res, {target: config.proxyTarget});
         }
         else {
             var resp = {headers: {}}
@@ -80,23 +113,23 @@ function mockFn(req, res, mockFile, next) {
     })
 }
 
-function parseBody(mockData, qs, post, req){
-    if (typeof mockData.body == "function") {
+function parseBody(mockData, qs, post, req) {
+    if (typeof mockData.body == 'function') {
         try {
             mockData.body = callFn(mockData.body, mockData, qs, post, req);
         }
         catch (e) {
-			console.error(e);
+            console.error(e);
         }
     }
-	
-	if(typeof mockData.body == 'object'){
-		mockData.body = JSON.stringify(mockData.body, null, 4);
-	}
-	if(mockData.body === undefined || mockData === null){
-		mockData.body = '';
-	}
-	if(typeof mockData.body != 'string'){
+
+    if (typeof mockData.body == 'object') {
+        mockData.body = JSON.stringify(mockData.body, null, 4);
+    }
+    if (mockData.body === undefined || mockData === null) {
+        mockData.body = '';
+    }
+    if (typeof mockData.body != 'string') {
         mockData.body = String(mockData.body);
     }
 }
@@ -117,7 +150,7 @@ function parseHeader(mockData, qs, post, req) {
     }
     //默认值
     var defaultHeader = {
-        "content-type": 'application/json; charset=utf-8',
+        'content-type': 'application/json; charset=utf-8',
         //"cache-control": 'no-cache',
     };
     if (!mockData.status) {
@@ -154,7 +187,19 @@ function callFn(fn, mockData, qs, post, req) {
         return fn.call(mockData, qs, post, req.headers, req);
     }
     catch (e) {
-        r = "ERR in js func: " + "\n" + fn.toString()
+        r = 'ERR in js func: ' + '\n' + fn.toString()
         console.error(e);
+    }
+}
+
+module.exports = {
+    start,
+    checkStart,
+    config,
+    middleware(req, res, next) {
+        onHandle(req, res)
+    },
+    close() {
+        if (server) server.close()
     }
 }
