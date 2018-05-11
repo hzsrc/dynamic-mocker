@@ -50,7 +50,7 @@ function start(configFile) {
 function checkStart(configFile) {
     loadConfig(configFile)
     if (config.mockEnabled) {
-        start()
+        start(configFile)
     }
 }
 
