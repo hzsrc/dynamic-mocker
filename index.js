@@ -115,21 +115,31 @@ function mockFn(req, res, mockFile, next) {
         return next();
     }
 
-    readPost(req, post => {
-        var qs = querystring.parse(url.parse(req.url).query);
-        parseBody(mockData, qs, post, req).then(body => {
-            mockData.body = body;
-            parseHeader(mockData, qs, post, req);
+    if (req.method == 'OPTIONS') {
+        if (!mockData.headers) {
+            mockData.headers = {}
+        }
+        config.beforeResponse && config.beforeResponse(mockData, req);
+        res.writeHead(200, mockData.headers);
+        res.end('');
+    }
+    else {
+        readPost(req, post => {
+            var qs = querystring.parse(url.parse(req.url).query);
+            parseBody(mockData, qs, post, req).then(body => {
+                mockData.body = body;
+                parseHeader(mockData, qs, post, req);
 
-            config.beforeResponse && config.beforeResponse(mockData, req);
-            console.log('mock:\t' + req.url);
+                config.beforeResponse && config.beforeResponse(mockData, req);
+                console.log('mock:\t' + req.url);
 
-            res.writeHead(mockData.status, mockData.headers);
-            res.end(mockData.body);
-        }).catch(e => {
-            res.end(e);
-        });
-    })
+                res.writeHead(mockData.status, mockData.headers);
+                res.end(mockData.body);
+            }).catch(e => {
+                res.end(e);
+            });
+        })
+    }
 }
 
 function parseBody(mockData, qs, post, req) {
