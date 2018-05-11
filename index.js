@@ -15,11 +15,26 @@ function loadConfig(fn) {
 }
 
 function start(configFile) {
+    config = null
     loadConfig(configFile)
     var createServer = require('./create-server.js')
     process.title = 'dyn-mocker';
-    console.log('Current path: ' + __dirname + '\nMock root path: ' + config.mockPath)
+    console.log('Current path: ' + __dirname
+        + '\nMock root path: ' + config.mockPath
+        + '\nProxy target: ' + config.proxyTarget
+    );
+    watchConfig();
     return server = createServer(config.isHttps, config.port, onHandle);
+
+
+    function watchConfig() {
+        fs.watch(configFile, (file) => {
+            if (file) {
+                close()
+                start(configFile)
+            }
+        })
+    }
 }
 
 function checkStart(configFile) {
@@ -90,7 +105,7 @@ function onHandle(req, res) {
     }
 }
 
-//使用yaml文件模拟内容输出
+//使用js文件模拟内容输出
 function mockFn(req, res, mockFile, next) {
     //var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(mockFile) + ';return module.exports})()';
     mockFile = path.resolve(mockFile);
@@ -102,36 +117,44 @@ function mockFn(req, res, mockFile, next) {
 
     readPost(req, post => {
         var qs = querystring.parse(url.parse(req.url).query);
-        parseBody(mockData, qs, post, req);
-        parseHeader(mockData, qs, post, req);
+        parseBody(mockData, qs, post, req).then(body => {
+            mockData.body = body;
+            parseHeader(mockData, qs, post, req);
 
-        config.beforeResponse && config.beforeResponse(mockData, req);
-        console.log('mock:\t' + req.url);
+            config.beforeResponse && config.beforeResponse(mockData, req);
+            console.log('mock:\t' + req.url);
 
-        res.writeHead(mockData.status, mockData.headers);
-        res.end(mockData.body);
+            res.writeHead(mockData.status, mockData.headers);
+            res.end(mockData.body);
+        }).catch(e => {
+            res.end(e);
+        });
     })
 }
 
 function parseBody(mockData, qs, post, req) {
-    if (typeof mockData.body == 'function') {
-        try {
-            mockData.body = callFn(mockData.body, mockData, qs, post, req);
+    return new Promise((resolve, reject) => {
+        var body = mockData.body;
+        if (typeof body == 'function') {
+            callFn(body, mockData, qs, post, req)
+                .then(toString)
+                .catch(reject)
         }
-        catch (e) {
-            console.error(e);
-        }
-    }
+        else toString(mockData.body)
 
-    if (typeof mockData.body == 'object') {
-        mockData.body = JSON.stringify(mockData.body, null, 4);
-    }
-    if (mockData.body === undefined || mockData === null) {
-        mockData.body = '';
-    }
-    if (typeof mockData.body != 'string') {
-        mockData.body = String(mockData.body);
-    }
+        function toString(body) {
+            if (typeof body == 'object') {
+                body = JSON.stringify(body, null, 4);
+            }
+            if (body === undefined || mockData === null) {
+                body = '';
+            }
+            if (typeof body != 'string') {
+                body = String(body);
+            }
+            resolve(body)
+        }
+    })
 }
 
 function parseHeader(mockData, qs, post, req) {
@@ -184,11 +207,17 @@ function readPost(req, callback) {
 
 function callFn(fn, mockData, qs, post, req) {
     try {
-        return fn.call(mockData, qs, post, req.headers, req);
+        var body = fn.call(mockData, qs, post, req.headers, req)
+        if (body.then && body.catch) {
+            return body
+        }
+        else
+            return Promise.resolve(body);
     }
     catch (e) {
-        r = 'ERR in js func: ' + '\n' + fn.toString()
+        var r = 'ERR in js func: ' + '\n' + fn.toString()
         console.error(e);
+        return Promise.reject(r)
     }
 }
 
