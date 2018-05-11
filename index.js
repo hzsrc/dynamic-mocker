@@ -4,13 +4,34 @@ var url = require('url'), querystring = require('querystring');
 
 var _proxyHost;
 var config, proxy, server;
+var configWatched;
 
 //启动服务
 function loadConfig(fn) {
     if (!config) {
         var fn = fn ? path.resolve(fn) : './config.js';
+        delete require.cache[fn];
         config = require(fn);
         _proxyHost = url.parse(config.proxyTarget).hostname
+
+        watchConfig();
+    }
+
+    var timeHd = 0;
+
+    function watchConfig() {
+        if (!configWatched) {
+            configWatched = true
+            fs.watch(fn, () => {
+                clearTimeout(timeHd)
+                timeHd = setTimeout(restart, 500)
+            })
+        }
+    }
+
+    function restart() {
+        close()
+        start(fn)
     }
 }
 
@@ -23,18 +44,7 @@ function start(configFile) {
         + '\nMock root path: ' + config.mockPath
         + '\nProxy target: ' + config.proxyTarget
     );
-    watchConfig();
     return server = createServer(config.isHttps, config.port, onHandle);
-
-
-    function watchConfig() {
-        fs.watch(configFile, (file) => {
-            if (file) {
-                close()
-                start(configFile)
-            }
-        })
-    }
 }
 
 function checkStart(configFile) {
@@ -231,6 +241,13 @@ function callFn(fn, mockData, qs, post, req) {
     }
 }
 
+function close() {
+    if (server) {
+        server.close();
+        server = null
+    }
+}
+
 module.exports = {
     start,
     checkStart,
@@ -238,7 +255,5 @@ module.exports = {
     middleware(req, res, next) {
         onHandle(req, res)
     },
-    close() {
-        if (server) server.close()
-    }
+    close,
 }

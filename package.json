@@ -38,10 +38,10 @@
     ]
   ],
   "_from": "dyn-mocker@latest",
-  "_id": "dyn-mocker@1.0.8",
+  "_id": "dyn-mocker@1.1.3",
   "_inBundle": false,
   "_inCache": true,
-  "_integrity": "sha1-Fi1fkrPsCJciTkAnuGsVwaA255s=",
+  "_integrity": "sha1-cYVbFG2NDScn6JeVg4iei/emi0s=",
   "_location": "/dyn-mocker",
   "_nodeVersion": "6.11.2",
   "_npmOperationalInternal": {
@@ -53,9 +53,7 @@
     "email": "hz932@qq.com"
   },
   "_npmVersion": "3.10.10",
-  "_phantomChildren": {
-    "argparse": "1.0.9"
-  },
+  "_phantomChildren": {},
   "_requested": {
     "type": "tag",
     "registry": true,
@@ -67,10 +65,11 @@
     "fetchSpec": "latest"
   },
   "_requiredBy": [
-    "#DEV:/"
+    "#DEV:/",
+    "#USER"
   ],
-  "_resolved": "http://registry.npm.taobao.org/dyn-mocker/download/dyn-mocker-1.0.8.tgz",
-  "_shasum": "162d5f92b3ec0897224e4027b86b15c1a036e79b",
+  "_resolved": "http://registry.npm.taobao.org/dyn-mocker/download/dyn-mocker-1.1.3.tgz",
+  "_shasum": "71855b146d8d0d2727e8979583889e8bf7a68b4b",
   "_shrinkwrap": null,
   "_spec": "dyn-mocker@latest",
   "_where": "D:\\src\\eis-ePortal",
@@ -110,5 +109,5 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.1.2"
+  "version": "1.1.5"
 }
