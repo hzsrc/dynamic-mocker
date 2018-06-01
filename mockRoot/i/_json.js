@@ -2,7 +2,7 @@ module.export = {
     "disabled": 0,
     "status": 200,
     "headers": {
-        "server": "dyn-mocker",
+        "server": "dynamic-mocker",
         "set-cookie": "foo=bar; path=/",
         "cache-control": "no-cache"
     },

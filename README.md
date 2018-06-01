@@ -1,13 +1,13 @@
-# dyn-mocker
+# dynamic-mocker
 A dynamic "mock + proxy" server for front-end development.
-Please see the [sample project](https://github.com/hzsrc/dyn-mocker-sample) in source code.
+Please see the [sample project](https://github.com/hzsrc/dynamic-mocker-sample) in source code.
 
 # Usage
 
 ## 1. install
-	npm i dyn-mocker -D
+	npm i dynamic-mocker -D
 #### or
-	yarn add dyn-mocker --dev
+	yarn add dynamic-mocker --dev
 
 ## 2. configuration
 	Make a mock directory, and copy the mock-config.js into it.
@@ -69,19 +69,19 @@ Edit the mock-config.js options:
 ## 4. Add script to package.json
 	"scripts": {
 		...
-	    "mock": "node ./node_modules/dyn-mocker ./mock/mock-config.js"
+	    "mock": "node ./node_modules/dynamic-mocker ./mock/mock-config.js"
 	}
 ## 5. Start mock server
 	npm run mock
 
-## 6. Create js files for dyn-mocker in the mock/root directory
+## 6. Create js files for dynamic-mocker in the mock/root directory
 ### Simple js file:
-	// dyn-mocker use json eval mode, but not JSON.parse
+	// dynamic-mocker use json eval mode, but not JSON.parse
 	module.export = {
 		disabled: 0,
 		status: 200,
 		"headers": {
-			"server": "dyn-mocker",
+			"server": "dynamic-mocker",
 			"set-cookie": "foo=bar; path=/",
 			"cache-control": "no-cache"
 		},
