@@ -39,7 +39,7 @@ function start(configFile) {
     config = null
     loadConfig(configFile)
     var createServer = require('./create-server.js')
-    process.title = 'dyn-mocker';
+    process.title = 'dynamic-mocker';
     console.log('Current path: ' + __dirname
         + '\nMock root path: ' + config.mockPath
         + '\nProxy target: ' + config.proxyTarget

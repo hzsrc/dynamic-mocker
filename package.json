@@ -2,10 +2,10 @@
   "_args": [
     [
       {
-        "raw": "dyn-mocker",
+        "raw": "dynamic-mocker",
         "scope": null,
-        "escapedName": "dyn-mocker",
-        "name": "dyn-mocker",
+        "escapedName": "dynamic-mocker",
+        "name": "dynamic-mocker",
         "rawSpec": "",
         "spec": "latest",
         "type": "tag"
@@ -14,10 +14,10 @@
     ],
     [
       {
-        "raw": "dyn-mocker@latest",
+        "raw": "dynamic-mocker@latest",
         "scope": null,
-        "escapedName": "dyn-mocker",
-        "name": "dyn-mocker",
+        "escapedName": "dynamic-mocker",
+        "name": "dynamic-mocker",
         "rawSpec": "latest",
         "spec": "latest",
         "type": "tag"
@@ -26,10 +26,10 @@
     ],
     [
       {
-        "raw": "dyn-mocker@1.0.6",
+        "raw": "dynamic-mocker@1.0.6",
         "scope": null,
-        "escapedName": "dyn-mocker",
-        "name": "dyn-mocker",
+        "escapedName": "dynamic-mocker",
+        "name": "dynamic-mocker",
         "rawSpec": "1.0.6",
         "spec": "1.0.6",
         "type": "version"
@@ -37,16 +37,16 @@
       "D:\\src\\eis-ePortal"
     ]
   ],
-  "_from": "dyn-mocker@latest",
-  "_id": "dyn-mocker@1.1.3",
+  "_from": "dynamic-mocker@latest",
+  "_id": "dynamic-mocker@1.1.3",
   "_inBundle": false,
   "_inCache": true,
   "_integrity": "sha1-cYVbFG2NDScn6JeVg4iei/emi0s=",
-  "_location": "/dyn-mocker",
+  "_location": "/dynamic-mocker",
   "_nodeVersion": "6.11.2",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/dyn-mocker-1.0.6.tgz_1512368734860_0.6393717809114605"
+    "tmp": "tmp/dynamic-mocker-1.0.6.tgz_1512368734860_0.6393717809114605"
   },
   "_npmUser": {
     "name": "hzsrc",
@@ -57,9 +57,9 @@
   "_requested": {
     "type": "tag",
     "registry": true,
-    "raw": "dyn-mocker@latest",
-    "name": "dyn-mocker",
-    "escapedName": "dyn-mocker",
+    "raw": "dynamic-mocker@latest",
+    "name": "dynamic-mocker",
+    "escapedName": "dynamic-mocker",
     "rawSpec": "latest",
     "saveSpec": null,
     "fetchSpec": "latest"
@@ -68,10 +68,10 @@
     "#DEV:/",
     "#USER"
   ],
-  "_resolved": "http://registry.npm.taobao.org/dyn-mocker/download/dyn-mocker-1.1.3.tgz",
+  "_resolved": "http://registry.npm.taobao.org/dynamic-mocker/download/dynamic-mocker-1.1.3.tgz",
   "_shasum": "71855b146d8d0d2727e8979583889e8bf7a68b4b",
   "_shrinkwrap": null,
-  "_spec": "dyn-mocker@latest",
+  "_spec": "dynamic-mocker@latest",
   "_where": "D:\\src\\eis-ePortal",
   "author": {
     "name": "HuangZheng"
@@ -87,7 +87,7 @@
   "dist": {
     "integrity": "sha512-FYwTR97gVIKBewPPoYKyJdo03iyU/b73fIT5AYbYZWpw3RLoGRYyQGTWAj9qWQxhQ6k5QDPytBlAogK2NVkhWQ==",
     "shasum": "4855106ca6abd79c25cd9d1c885964945cd28b1e",
-    "tarball": "https://registry.npmjs.org/dyn-mocker/-/dyn-mocker-1.0.6.tgz"
+    "tarball": "https://registry.npmjs.org/dynamic-mocker/-/dynamic-mocker-1.0.6.tgz"
   },
   "email": "hz932@qq.com",
   "keywords": [],
@@ -103,7 +103,7 @@
       "email": "hz932@qq.com"
     }
   ],
-  "name": "dyn-mocker",
+  "name": "dynamic-mocker",
   "optionalDependencies": {},
   "scripts": {
     "start": "node index.js",
