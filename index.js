@@ -164,6 +164,7 @@ function parseBody(mockData, qs, post, req) {
 
         function toString(body) {
             if (typeof body == 'object') {
+				body.IS_MOCK_DATA = true;
                 body = JSON.stringify(body, null, 4);
             }
             if (body === undefined || mockData === null) {
