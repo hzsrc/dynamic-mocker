@@ -102,7 +102,7 @@ function onHandle(req, res) {
     //由JSP或ASP.Net、PHP服务处理
     function proxyWeb() {
         if (config.proxyTarget) {
-            console.log('proxy:\t' + pathname);
+            console.log('proxy:\t' + pathname + '\t=>\t' + config.proxyTarget + pathname);
             req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
             getProxy().web(req, res, {target: config.proxyTarget});
         }
@@ -164,7 +164,7 @@ function parseBody(mockData, qs, post, req) {
 
         function toString(body) {
             if (typeof body == 'object') {
-				body['!_IS_MOCK_DATA'] = true;
+                body['!_IS_MOCK_DATA'] = true;
                 body = JSON.stringify(body, null, 4);
             }
             if (body === undefined || mockData === null) {

@@ -69,7 +69,7 @@ Edit the mock-config.js options:
 ## 4. Add script to package.json
 	"scripts": {
 		...
-	    "mock": "node ./node_modules/dynamic-mocker ./mock/mock-config.js"
+	    "mock": node -e "require('dynamic-mocker').checkStart('./mock/mock-config.js')"
 	}
 ## 5. Start mock server
 	npm run mock
