@@ -80,7 +80,7 @@ function onHandle(req, res) {
                 var mockFile = path.join(paths[i], pathname + '.js');
                 if (fs.existsSync(mockFile)) {
                     //模拟数据，从mock文件夹获取
-                    mockFn(req, res, mockFile, next);
+                    mockByFile(req, res, mockFile, next);
                 }
                 else {
                     next()
@@ -116,11 +116,20 @@ function onHandle(req, res) {
 }
 
 //使用js文件模拟内容输出
-function mockFn(req, res, mockFile, next) {
+function mockByFile(req, res, mockFile, next) {
     //var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(mockFile) + ';return module.exports})()';
-    mockFile = path.resolve(mockFile);
-    delete require.cache[mockFile]; //根据绝对路径，清空缓存的对象
-    var mockData = require(mockFile) || {};
+    var fullMockFile = path.resolve(mockFile);
+    delete require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
+    try {
+        var mockData = require(fullMockFile) || {};
+    }
+    catch (e) {
+        res.writeHead(500, {});
+        var error = `Error in file:${mockFile}:\n` + e;
+        console.error(error);
+        return res.end(JSON.stringify(error));
+    }
+
     if (mockData.disabled) {
         return next();
     }
