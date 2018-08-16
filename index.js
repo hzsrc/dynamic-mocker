@@ -67,7 +67,12 @@ function getProxy() {
 
 function onHandle(req, res) {
     var urlPart = url.parse(req.url);
+    req.query = querystring.parse(urlPart.query) //暂存备用
+
     var pathname = urlPart.pathname;
+    if (config.mapFile) {
+        pathname = config.mapFile(pathname, req)
+    }
     if (config.mockEnabled && config.checkPath(pathname)) {
         var paths = config.mockPath;
         if (typeof paths == 'string') {
@@ -144,7 +149,7 @@ function mockByFile(req, res, mockFile, next) {
     }
     else {
         readPost(req, post => {
-            var qs = querystring.parse(url.parse(req.url).query);
+            var qs = req.query;
             parseBody(mockData, qs, post, req).then(body => {
                 mockData.body = body;
                 parseHeader(mockData, qs, post, req);

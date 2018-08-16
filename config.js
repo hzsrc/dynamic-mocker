@@ -13,6 +13,15 @@ const config = {
         respData.headers["Access-Control-Allow-Credentials"] = "true";
         respData.headers["Access-Control-Allow-Headers"] = "Content-Type,Content-Length,Authorization,Access,X-Requested-With";
         //respData.headers["Access-Control-Allow-Methods"] = "PUT,POST,GET,DELETE,PATCH,OPTIONS";
+    },
+    //映射处理文件。用于处理动态url。或是同一个url多个http method的情况。生成的参数可以放在require.query里面。
+    mapFile(pathname, req) {
+        var m = pathname.match(/(\/announcement)\/(\d+)/)
+        if (m) {
+            req.query.noticeId = m[2]
+            return m[1]
+        }
+        return pathname
     }
 }
 
