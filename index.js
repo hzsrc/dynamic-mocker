@@ -139,13 +139,13 @@ function mockByFile(req, res, mockFile, next) {
         return next();
     }
 
-    if (req.method == 'OPTIONS') {
+    if (req.method.toUpperCase() == 'OPTIONS') {
         if (!mockData.headers) {
             mockData.headers = {}
         }
         config.beforeResponse && config.beforeResponse(mockData, req);
         res.writeHead(200, mockData.headers);
-        res.end('');
+        res.end('OPTIONS OK');
     }
     else {
         readPost(req, post => {
@@ -158,7 +158,10 @@ function mockByFile(req, res, mockFile, next) {
                 console.log('mock:\t' + req.url);
 
                 res.writeHead(mockData.status, mockData.headers);
-                res.end(mockData.body);
+                if (mockData.delay)
+                    setTimeout(t => res.end(mockData.body), mockData.delay)
+                else
+                    res.end(mockData.body);
             }).catch(e => {
                 res.end(e);
             });

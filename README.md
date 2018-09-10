@@ -79,6 +79,7 @@ Edit the mock-config.js options:
 	// dynamic-mocker use json eval mode, but not JSON.parse
 	module.export = {
 		disabled: 0,
+        delay: 1000, // delay ms to response
 		status: 200,
 		"headers": {
 			"server": "dynamic-mocker",
