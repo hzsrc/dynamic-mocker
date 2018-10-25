@@ -106,7 +106,8 @@
   "optionalDependencies": {},
   "scripts": {
     "start": "node index.js",
+    "proxy80": "sudo node ./run.js ./config-proxy80.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.1.13"
+  "version": "1.1.14"
 }

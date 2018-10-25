@@ -41,25 +41,6 @@ function getProxyTarget(urlPart) {
     return t
 }
 
-function start(configFile) {
-    config = null
-    loadConfig(configFile)
-    var createServer = require('./create-server.js')
-    process.title = 'dynamic-mocker';
-    console.log('Current path: ' + __dirname
-        + '\nMock root path: ' + config.mockPath
-        + '\nProxy target: ' + config.proxyTarget
-    );
-    return server = createServer(config.isHttps, config.port, onHandle);
-}
-
-function checkStart(configFile) {
-    loadConfig(configFile)
-    if (config.mockEnabled) {
-        start(configFile)
-    }
-}
-
 function getProxy() {
     if (!proxy) {
         proxy = require('http-proxy').createProxyServer({});
@@ -170,8 +151,8 @@ function mockByFile(req, res, mockFile, next) {
                 else
                     res.end(mockData.body);
             }).catch(e => {
-              res.writeHead(500, mockData.headers);
-              res.end(String(e));
+                res.writeHead(500, mockData.headers);
+                res.end(String(e));
             });
         })
     }
@@ -191,11 +172,11 @@ function parseBody(mockData, qs, post, req) {
             if (typeof body == 'object') {
                 body['!_IS_MOCK_DATA'] = true;
                 try {
-                  body = JSON.stringify(body, null, 4);
+                    body = JSON.stringify(body, null, 4);
                 }
                 catch (e) {
-                  console.error(e);
-                  return reject('ERR in JSON data: ' + '\t' + e.toString())
+                    console.error(e);
+                    return reject('ERR in JSON data: ' + '\t' + e.toString())
                 }
             }
             if (body === undefined || mockData === null) {
@@ -271,6 +252,24 @@ function callFn(fn, mockData, qs, post, req) {
         console.error(e);
         return Promise.reject(r)
     }
+}
+
+
+function start(configFile, handler) {
+    config = null
+    loadConfig(configFile)
+    var createServer = require('./create-server.js')
+    process.title = 'dynamic-mocker';
+    console.log('Current path: ' + __dirname
+        + '\nMock root path: ' + config.mockPath
+        + '\nProxy target: ' + config.proxyTarget
+    );
+    return server = createServer(config.isHttps, config.port, handler || onHandle);
+}
+
+function checkStart(configFile, handler) {
+    loadConfig(configFile)
+    start(configFile, handler)
 }
 
 function close() {
