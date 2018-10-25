@@ -2,7 +2,6 @@ var path = require('path'), fs = require('fs');
 var url = require('url'), querystring = require('querystring');
 //var yaml = require('js-yaml');
 
-var _proxyHost;
 var config, proxy, server;
 var configWatched;
 
@@ -12,7 +11,6 @@ function loadConfig(fn) {
         var fn = fn ? path.resolve(fn) : './config.js';
         delete require.cache[fn];
         config = require(fn);
-        _proxyHost = url.parse(config.proxyTarget).hostname
 
         watchConfig();
     }
@@ -33,6 +31,14 @@ function loadConfig(fn) {
         close()
         start(fn)
     }
+}
+
+function getProxyTarget(urlPart) {
+    var t = config.proxyTarget
+    if (typeof t === 'function') {
+        return t(urlPart)
+    }
+    return t
 }
 
 function start(configFile) {
@@ -107,9 +113,10 @@ function onHandle(req, res) {
     //由JSP或ASP.Net、PHP服务处理
     function proxyWeb() {
         if (config.proxyTarget) {
-            console.log('proxy:\t' + pathname + '\t=>\t' + config.proxyTarget + pathname);
-            req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
-            getProxy().web(req, res, {target: config.proxyTarget});
+            var target = getProxyTarget(urlPart);
+            console.log('proxy:\t' + pathname + '\t=>\t' + target + pathname);
+            req.headers.host = url.parse(target).hostname; //不设置的话，远程用ip访问会出错
+            getProxy().web(req, res, {target: target});
         }
         else {
             var resp = {headers: {}}
@@ -163,7 +170,8 @@ function mockByFile(req, res, mockFile, next) {
                 else
                     res.end(mockData.body);
             }).catch(e => {
-                res.end(e);
+              res.writeHead(500, mockData.headers);
+              res.end(String(e));
             });
         })
     }
@@ -182,7 +190,13 @@ function parseBody(mockData, qs, post, req) {
         function toString(body) {
             if (typeof body == 'object') {
                 body['!_IS_MOCK_DATA'] = true;
-                body = JSON.stringify(body, null, 4);
+                try {
+                  body = JSON.stringify(body, null, 4);
+                }
+                catch (e) {
+                  console.error(e);
+                  return reject('ERR in JSON data: ' + '\t' + e.toString())
+                }
             }
             if (body === undefined || mockData === null) {
                 body = '';
