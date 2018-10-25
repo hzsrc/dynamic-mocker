@@ -22,7 +22,7 @@ Please see the [sample project](https://github.com/hzsrc/dynamic-mocker-sample) 
 	const config = {
 		mockEnabled: true,
 		mockPath: ['mock/root', 'mock/root-old'], //模拟文件根目录
-		proxyTarget: 'http://your-backend-server.com', //后台接口服务地址（代理目标），为空表示不代理
+		proxyTarget: 'http://your-backend-server.com', //后台接口服务地址（代理目标），为空表示不代理。可以是个函数：function(urlPart){} 
 		isHttps: false, //是否https
 		port: 8085, //端口
 		checkPath: function (urlPath) { //urlPath校验函数，返回true表示需要进行mock处理，为false直接走代理
