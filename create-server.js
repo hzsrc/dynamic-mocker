@@ -1,4 +1,5 @@
 //var opn = require('opn');
+var fs = require('fs')
 
 module.exports = function createServer(isHttps, port, onHandle) {
     port = parseInt(port, 10)
@@ -11,9 +12,9 @@ module.exports = function createServer(isHttps, port, onHandle) {
         if (port == '80') port = 443;
         var http = require('https');
         var options = {
-            key: fs.readFileSync('./ssl/server-key.pem'),
-            ca: [fs.readFileSync('./ssl/ca-cert.pem')],
-            cert: fs.readFileSync('./ssl/server-cert.pem')
+            key: fs.readFileSync(__dirname + '/ssl/server-key.pem'),
+            ca: [fs.readFileSync(__dirname + '/ssl/ca-cert.pem')],
+            cert: fs.readFileSync(__dirname + '/ssl/server-cert.pem')
         };
         server = http.createServer(options, onHandle).listen(port);
     }

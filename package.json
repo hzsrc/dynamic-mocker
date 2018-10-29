@@ -105,9 +105,9 @@
   "name": "dynamic-mocker",
   "optionalDependencies": {},
   "scripts": {
-    "start": "node index.js",
+    "start": "node run.js",
     "proxy80": "sudo node ./run.js ./config-proxy80.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.1.14"
+  "version": "1.1.15"
 }
