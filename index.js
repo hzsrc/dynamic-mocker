@@ -60,6 +60,12 @@ function onHandle(req, res) {
     if (config.mapFile) {
         pathname = config.mapFile(pathname, req)
     }
+
+    if (config.checkRequest && !config.checkRequest(urlPart)) {
+        res.writeHead(500, {});
+        res.end('IGNORED');
+        return
+    }
     if (config.mockEnabled && config.checkPath(pathname)) {
         var paths = config.mockPath;
         if (typeof paths == 'string') {

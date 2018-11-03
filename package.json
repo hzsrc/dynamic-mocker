@@ -1,113 +1,21 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "dynamic-mocker",
-        "scope": null,
-        "escapedName": "dynamic-mocker",
-        "name": "dynamic-mocker",
-        "rawSpec": "",
-        "spec": "latest",
-        "type": "tag"
-      },
-      "D:\\src"
-    ],
-    [
-      {
-        "raw": "dynamic-mocker@latest",
-        "scope": null,
-        "escapedName": "dynamic-mocker",
-        "name": "dynamic-mocker",
-        "rawSpec": "latest",
-        "spec": "latest",
-        "type": "tag"
-      },
-      "D:\\src\\ep61"
-    ],
-    [
-      {
-        "raw": "dynamic-mocker@1.0.6",
-        "scope": null,
-        "escapedName": "dynamic-mocker",
-        "name": "dynamic-mocker",
-        "rawSpec": "1.0.6",
-        "spec": "1.0.6",
-        "type": "version"
-      },
-      "D:\\src\\eis-ePortal"
-    ]
-  ],
-  "_from": "dynamic-mocker@latest",
-  "_id": "dynamic-mocker@1.1.9",
-  "_inBundle": false,
-  "_inCache": true,
-  "_integrity": "sha1-E6OJCgihDox8VcK76+oZiAl/CVc=",
-  "_location": "/dynamic-mocker",
-  "_nodeVersion": "6.11.2",
-  "_npmOperationalInternal": {
-    "host": "s3://npm-registry-packages",
-    "tmp": "tmp/dynamic-mocker-1.0.6.tgz_1512368734860_0.6393717809114605"
+  "scripts": {
+    "start": "node run.js",
+    "proxy80": "node ./run.js ./config-proxy80.js",
+    "proxy-all": "node ./run.js ./config-proxy-all.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "_npmUser": {
-    "name": "hzsrc",
-    "email": "hz932@qq.com"
-  },
-  "_npmVersion": "3.10.10",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "dynamic-mocker@latest",
-    "name": "dynamic-mocker",
-    "escapedName": "dynamic-mocker",
-    "rawSpec": "latest",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#DEV:/",
-    "#USER"
-  ],
-  "_resolved": "http://registry.npm.taobao.org/dynamic-mocker/download/dynamic-mocker-1.1.9.tgz",
-  "_shasum": "13a3890a08a10e8c7c55c2bbebea1988097f0957",
-  "_shrinkwrap": null,
-  "_spec": "dynamic-mocker",
-  "author": {
-    "name": "HuangZheng"
-  },
-  "bundleDependencies": false,
   "dependencies": {
     "http-proxy": "^1.12.0"
   },
-  "deprecated": false,
-  "description": "A dyn-mock server for front-end development",
   "devDependencies": {},
-  "directories": {},
-  "dist": {
-    "integrity": "sha512-FYwTR97gVIKBewPPoYKyJdo03iyU/b73fIT5AYbYZWpw3RLoGRYyQGTWAj9qWQxhQ6k5QDPytBlAogK2NVkhWQ==",
-    "shasum": "4855106ca6abd79c25cd9d1c885964945cd28b1e",
-    "tarball": "https://registry.npmjs.org/dynamic-mocker/-/dynamic-mocker-1.0.6.tgz"
+  "author": {
+    "name": "HuangZheng"
   },
+  "description": "A dyn-mock server for front-end development",
   "email": "hz932@qq.com",
-  "keywords": [],
   "license": "Mit",
   "main": "index.js",
-  "maintainers": [
-    {
-      "name": "hz932",
-      "email": "hz932@qq.com"
-    },
-    {
-      "name": "hzsrc",
-      "email": "hz932@qq.com"
-    }
-  ],
   "name": "dynamic-mocker",
-  "optionalDependencies": {},
-  "scripts": {
-    "start": "node run.js",
-    "proxy80": "sudo node ./run.js ./config-proxy80.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "version": "1.1.15"
 }
