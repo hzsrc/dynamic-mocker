@@ -12,9 +12,9 @@ module.exports = function createServer(isHttps, port, onHandle) {
         if (port == '80') port = 443;
         var http = require('https');
         var options = {
-            key: fs.readFileSync(__dirname + '/ssl/server-key.pem'),
-            ca: [fs.readFileSync(__dirname + '/ssl/ca-cert.pem')],
-            cert: fs.readFileSync(__dirname + '/ssl/server-cert.pem')
+            key: fs.readFileSync(__dirname + '/ssl/server.key'),
+            ca: [fs.readFileSync(__dirname + '/ssl/ca.crt')],
+            cert: fs.readFileSync(__dirname + '/ssl/server.crt')
         };
         server = http.createServer(options, onHandle).listen(port);
     }
