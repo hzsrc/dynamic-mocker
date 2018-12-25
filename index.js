@@ -2,6 +2,7 @@ var path = require('path'), fs = require('fs');
 var url = require('url'), querystring = require('querystring');
 //var yaml = require('js-yaml');
 
+var _proxyHost;
 var config, proxy, server;
 var configWatched;
 
@@ -11,6 +12,7 @@ function loadConfig(fn) {
         var fn = fn ? path.resolve(fn) : './config.js';
         delete require.cache[fn];
         config = require(fn);
+        _proxyHost = url.parse(config.proxyTarget).hostname
 
         watchConfig();
     }
@@ -33,12 +35,23 @@ function loadConfig(fn) {
     }
 }
 
-function getProxyTarget(urlPart) {
-    var t = config.proxyTarget
-    if (typeof t === 'function') {
-        return t(urlPart)
+function start(configFile) {
+    config = null
+    loadConfig(configFile)
+    var createServer = require('./create-server.js')
+    process.title = 'dynamic-mocker';
+    console.log('Current path: ' + __dirname
+        + '\nMock root path: ' + config.mockPath
+        + '\nProxy target: ' + config.proxyTarget
+    );
+    return server = createServer(config.isHttps, config.port, onHandle);
+}
+
+function checkStart(configFile) {
+    loadConfig(configFile)
+    if (config.mockEnabled) {
+        start(configFile)
     }
-    return t
 }
 
 function getProxy() {
@@ -54,18 +67,7 @@ function getProxy() {
 
 function onHandle(req, res) {
     var urlPart = url.parse(req.url);
-    req.query = querystring.parse(urlPart.query) //暂存备用
-
     var pathname = urlPart.pathname;
-    if (config.mapFile) {
-        pathname = config.mapFile(pathname, req)
-    }
-
-    if (config.checkRequest && !config.checkRequest(urlPart)) {
-        res.writeHead(500, {});
-        res.end('IGNORED');
-        return
-    }
     if (config.mockEnabled && config.checkPath(pathname)) {
         var paths = config.mockPath;
         if (typeof paths == 'string') {
@@ -78,7 +80,7 @@ function onHandle(req, res) {
                 var mockFile = path.join(paths[i], pathname + '.js');
                 if (fs.existsSync(mockFile)) {
                     //模拟数据，从mock文件夹获取
-                    mockByFile(req, res, mockFile, next);
+                    mockFn(req, res, mockFile, next);
                 }
                 else {
                     next()
@@ -100,10 +102,9 @@ function onHandle(req, res) {
     //由JSP或ASP.Net、PHP服务处理
     function proxyWeb() {
         if (config.proxyTarget) {
-            var target = getProxyTarget(urlPart);
-            console.log('proxy:\t' + pathname + '\t=>\t' + target + pathname);
-            req.headers.host = url.parse(target).hostname; //不设置的话，远程用ip访问会出错
-            getProxy().web(req, res, {target: target});
+            console.log('proxy:\t' + pathname + '\t=>\t' + config.proxyTarget + pathname);
+            req.headers.host = _proxyHost;//不设置的话，远程用ip访问会出错
+            getProxy().web(req, res, {target: config.proxyTarget});
         }
         else {
             var resp = {headers: {}}
@@ -115,35 +116,26 @@ function onHandle(req, res) {
 }
 
 //使用js文件模拟内容输出
-function mockByFile(req, res, mockFile, next) {
+function mockFn(req, res, mockFile, next) {
     //var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(mockFile) + ';return module.exports})()';
-    var fullMockFile = path.resolve(mockFile);
-    delete require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
-    try {
-        var mockData = require(fullMockFile) || {};
-    }
-    catch (e) {
-        res.writeHead(500, {});
-        var error = `Error in file:${mockFile}:\n` + e;
-        console.error(error);
-        return res.end(JSON.stringify(error));
-    }
-
+    mockFile = path.resolve(mockFile);
+    delete require.cache[mockFile]; //根据绝对路径，清空缓存的对象
+    var mockData = require(mockFile) || {};
     if (mockData.disabled) {
         return next();
     }
 
-    if (req.method.toUpperCase() == 'OPTIONS') {
+    if (req.method == 'OPTIONS') {
         if (!mockData.headers) {
             mockData.headers = {}
         }
         config.beforeResponse && config.beforeResponse(mockData, req);
         res.writeHead(200, mockData.headers);
-        res.end('OPTIONS OK');
+        res.end('');
     }
     else {
         readPost(req, post => {
-            var qs = req.query;
+            var qs = querystring.parse(url.parse(req.url).query);
             parseBody(mockData, qs, post, req).then(body => {
                 mockData.body = body;
                 parseHeader(mockData, qs, post, req);
@@ -152,12 +144,9 @@ function mockByFile(req, res, mockFile, next) {
                 console.log('mock:\t' + req.url);
 
                 res.writeHead(mockData.status, mockData.headers);
-                if (mockData.delay)
-                    setTimeout(t => res.end(mockData.body), mockData.delay)
-                else
-                    res.end(mockData.body);
+                res.end(mockData.body);
             }).catch(e => {
-                res.writeHead(500, mockData.headers);
+                console.error(e)
                 res.end(String(e));
             });
         })
@@ -177,13 +166,7 @@ function parseBody(mockData, qs, post, req) {
         function toString(body) {
             if (typeof body == 'object') {
                 body['!_IS_MOCK_DATA'] = true;
-                try {
-                    body = JSON.stringify(body, null, 4);
-                }
-                catch (e) {
-                    console.error(e);
-                    return reject('ERR in JSON data: ' + '\t' + e.toString())
-                }
+                body = JSON.stringify(body, null, 4);
             }
             if (body === undefined || mockData === null) {
                 body = '';
@@ -258,24 +241,6 @@ function callFn(fn, mockData, qs, post, req) {
         console.error(e);
         return Promise.reject(r)
     }
-}
-
-
-function start(configFile, handler) {
-    config = null
-    loadConfig(configFile)
-    var createServer = require('./create-server.js')
-    process.title = 'dynamic-mocker';
-    console.log('Current path: ' + __dirname
-        + '\nMock root path: ' + config.mockPath
-        + '\nProxy target: ' + config.proxyTarget
-    );
-    return server = createServer(config.isHttps, config.port, handler || onHandle);
-}
-
-function checkStart(configFile, handler) {
-    loadConfig(configFile)
-    start(configFile, handler)
 }
 
 function close() {
