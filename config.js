@@ -9,12 +9,11 @@ const config = {
   },
   beforeResponse: function (respData, req) { //数据返回前的回调钩子，respData包含status、headers、body属性
     respData.headers['Access-Control-Allow-Origin'] = req.headers['origin'] || req.headers['Origin'] || '';
-    if (req.method === 'OPTIONS') {
-      respData.headers['Access-Control-Allow-Headers'] = req.headers['access-control-request-headers'] || req.headers['Access-Control-Request-Headers'] || '';
-      respData.headers['Access-Control-Allow-Credentials'] = 'true';
-      respData.headers['Access-Control-Max-Age'] = '6000';
-      //respData.headers["Access-Control-Allow-Methods"] = "PUT,POST,GET,DELETE,PATCH,OPTIONS";
-    }
+    respData.headers['Access-Control-Allow-Credentials'] = 'true';
+    respData.headers['Access-Control-Allow-Headers'] = req.headers['access-control-request-headers'] || req.headers['Access-Control-Request-Headers'] || '';
+    respData.headers['Access-Control-Max-Age'] = '6000';
+    //respData.headers["Access-Control-Allow-Methods"] = "PUT,POST,GET,DELETE,PATCH,OPTIONS";
+
     respData.headers['P3P'] = 'CP="CAO PSA OUR"';
     //CP="ALL IND DSP COR ADM CONo CUR CUSo IVAo IVDo PSA PSD TAI TELo OUR SAMo CNT COM INT NAV ONL PHY PRE PUR UNI"
   }
