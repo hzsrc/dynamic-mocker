@@ -169,6 +169,9 @@ function parseBody(mockData, qs, post, req) {
         else toString(mockData.body)
 
         function toString(body) {
+            if (body instanceof Buffer) {
+                return resolve(body)
+            }
             if (typeof body == 'object') {
                 body['!_IS_MOCK_DATA'] = true;
                 try {
