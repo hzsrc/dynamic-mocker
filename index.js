@@ -3,7 +3,7 @@ var url = require('url'), querystring = require('querystring');
 //var yaml = require('js-yaml');
 
 var config, proxy, server;
-var configWatched;
+var watcher;
 
 //启动服务
 function loadConfig(fn) {
@@ -18,13 +18,13 @@ function loadConfig(fn) {
     var timeHd = 0;
 
     function watchConfig() {
-        if (!configWatched) {
-            configWatched = true
-            fs.watch(fn, () => {
-                clearTimeout(timeHd)
-                timeHd = setTimeout(restart, 500)
-            })
+        if (watcher) {
+            watcher.close()
         }
+        watcher = fs.watch(fn, () => {
+            clearTimeout(timeHd)
+            timeHd = setTimeout(restart, 500)
+        })
     }
 
     function restart() {
@@ -257,7 +257,6 @@ function callFn(fn, mockData, qs, post, req) {
     }
 }
 
-
 function start(configOrConfigFile, handler) {
     config = null
     if (typeof configOrConfigFile === 'string') {
@@ -284,6 +283,10 @@ function close() {
     if (server) {
         server.close();
         server = null
+    }
+    if (watcher) {
+        watcher.close()
+        watcher = null
     }
 }
 
