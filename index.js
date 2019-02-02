@@ -1,6 +1,6 @@
-var getConfig = require('./getConfig.js')
-var byMock = require('./byMock.js')
-var byProxy = require('./byProxy.js')
+var getConfig = require('./src/getConfig.js')
+var byMock = require('./src/byMock.js')
+var byProxy = require('./src/byProxy.js')
 // var byStatic = require('./byStatic.js')
 
 var config, proxy, server;
@@ -25,9 +25,9 @@ function onHandle(req, res) {
 
 function start(configOrConfigFile, handler) {
     config = getConfig(configOrConfigFile, restart, true)
-    var createServer = require('./create-server.js')
+    var createServer = require('./src/create-server.js')
     process.title = 'dynamic-mocker';
-    console.log('Current path: ' + __dirname
+    console.log('Current path: ' + process.cwd()
         + '\nMock root path: ' + config.mockPath
         + '\nProxy target: ' + config.proxyTarget
     );
