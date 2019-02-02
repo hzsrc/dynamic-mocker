@@ -2,9 +2,11 @@
 // 用法原理：https://www.cnblogs.com/hz-blog/p/wechat-local-debug-domain.html
 
 const config = {
-    mockEnabled: false, // 设置mock失效，仅使用proxy功能
-    proxyTarget: function (urlPart) {
-        return 'http://localhost:9998'
+    mockEnabled: false, // 设置mock失效，使用proxy功能
+    proxyTarget: false,  // 设置proxy失效，使用static功能
+    static: {
+        index:'index.html',
+        path:'./'
     },
     isHttps: false, // 是否https
     port: 80 // 端口
