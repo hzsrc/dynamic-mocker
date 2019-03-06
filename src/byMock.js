@@ -14,7 +14,7 @@ function byMock(req, res, next) {
         if (config.mapFile) {
             pathname = config.mapFile(pathname, req)
         }
-        if (config.checkPath(pathname)) {
+        if (!config.checkPath || config.checkPath(pathname)) {
             var paths = config.mockPath;
             if (typeof paths == 'string') {
                 paths = [paths];
