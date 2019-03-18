@@ -3,6 +3,7 @@ A dynamic "mock + proxy" server for front-end development.
 Please see the [sample project](https://github.com/hzsrc/dynamic-mocker-sample) in source code.
 
 ![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker.png)
+![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker-en.png)
 
 # Usage
 
