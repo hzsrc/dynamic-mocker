@@ -50,7 +50,7 @@ Edit the mock-config.js options:
 ### mockPath
 	the root path[s] of mock files. String or array of string.
 ### proxyTarget
-	If no mock file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy.
+	If there is no mock data file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy.
 ### isHttps
 	[true] for https
 ### port
