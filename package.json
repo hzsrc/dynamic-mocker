@@ -1,21 +1,24 @@
 {
   "scripts": {
-    "start": "node run.js",
-    "proxy80": "node ./run.js ./config-proxy80.js",
+    "mock": "node run.js demo/mock_proxy/config.js",
+    "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
+    "static": "node ./run.js demo/static_svc/config-static.js",
     "proxy-all": "node ./run.js ./config-proxy-all.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \\\"Error: no demo specified\\\" && exit 1"
   },
   "dependencies": {
-    "http-proxy": "^1.12.0"
+    "http-proxy": "^1.12.0",
+    "mime": "^2.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "author": {
     "name": "HuangZheng"
   },
   "description": "Mock ajax datas, or proxy to real server",
   "email": "hz932@qq.com",
   "license": "Mit",
-  "main": "index.js",
+  "main": "src/index.js",
   "name": "dynamic-mocker",
   "version": "1.2.1"
 }

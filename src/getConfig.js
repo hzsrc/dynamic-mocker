@@ -3,13 +3,18 @@ var config;
 var watcher;
 var timeHd = 0;
 
+var _initPath = process.cwd()
 //启动服务
 function getConfig(configOrConfigFile, restart, forceReload) {
     if (!config || forceReload) {
-        if (!configOrConfigFile || typeof configOrConfigFile === 'string') {
-            configOrConfigFile = path.resolve(configOrConfigFile || './config.js');
+        if (typeof configOrConfigFile === 'string') {
+            process.chdir(_initPath)
+            configOrConfigFile = path.resolve(configOrConfigFile);
             delete require.cache[configOrConfigFile];
             config = require(configOrConfigFile);
+
+            //切换当前目录
+            process.chdir(path.dirname(configOrConfigFile))
 
             watchConfig();
         }

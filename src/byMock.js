@@ -15,10 +15,8 @@ function byMock(req, res, next) {
             pathname = config.mapFile(pathname, req)
         }
         if (!config.checkPath || config.checkPath(pathname)) {
-            var paths = config.mockPath;
-            if (typeof paths == 'string') {
-                paths = [paths];
-            }
+            var paths = [].concat(config.mockPath);
+
             var i = -1;
             var byNextPath = function () {
                 i++;
@@ -27,20 +25,24 @@ function byMock(req, res, next) {
                     if (fs.existsSync(mockFile)) {
                         //模拟数据，从mock文件夹获取
                         mockByFile(config, req, res, mockFile, byNextPath);
+                    } else {
+                        // 像`/api/delete/[id]`，这样的动态url走 `!ANY.js`，设置query.ThisUrlPart=[id]
+                        mockFile = path.join(paths[i], path.dirname(pathname), '!ANY.js');
+                        if (fs.existsSync(mockFile)) {
+                            req.query.ThisUrlPart = path.basename(pathname)
+                            mockByFile(config, req, res, mockFile, byNextPath);
+                        } else {
+                            byNextPath()
+                        }
                     }
-                    else {
-                        byNextPath()
-                    }
-                }
-                else {
+                } else {
                     //没有mock数据，代理给服务处理
                     next();
                 }
             };
             byNextPath();
         }
-    }
-    else {
+    } else {
         next()
     }
 }
@@ -48,13 +50,11 @@ function byMock(req, res, next) {
 
 //使用js文件模拟内容输出
 function mockByFile(config, req, res, mockFile, byNextPath) {
-    //var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(mockFile) + ';return module.exports})()';
     var fullMockFile = path.resolve(mockFile);
     delete require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
     try {
         var mockData = require(fullMockFile) || {};
-    }
-    catch (e) {
+    } catch (e) {
         res.writeHead(500, {});
         var error = `Error in file:${mockFile}:\n` + e;
         console.error(error);
@@ -72,8 +72,7 @@ function mockByFile(config, req, res, mockFile, byNextPath) {
         config.beforeResponse && config.beforeResponse(mockData, req);
         res.writeHead(200, mockData.headers);
         res.end('OPTIONS OK');
-    }
-    else {
+    } else {
         readPost(req, post => {
             var qs = req.query;
             parseBody(mockData, qs, post, req).then(body => {
@@ -103,8 +102,7 @@ function parseBody(mockData, qs, post, req) {
             callFn(body, mockData, qs, post, req)
                 .then(toString)
                 .catch(reject)
-        }
-        else toString(mockData.body)
+        } else toString(mockData.body)
 
         function toString(body) {
             if (body instanceof Buffer) {
@@ -114,8 +112,7 @@ function parseBody(mockData, qs, post, req) {
                 body['!_IS_MOCK_DATA'] = true;
                 try {
                     body = JSON.stringify(body, null, 4);
-                }
-                catch (e) {
+                } catch (e) {
                     console.error(e);
                     return reject('ERR in JSON data: ' + '\t' + e.toString())
                 }
@@ -133,17 +130,16 @@ function parseBody(mockData, qs, post, req) {
 
 function parseHeader(mockData, qs, post, req) {
     var headers = mockData.headers;
-    if (!headers) {
-        headers = {};
-    }
-    else if (typeof headers == 'function') {
+    if (typeof headers == 'function') {
         try {
             headers = callFn(headers, mockData, qs, post, req);
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
             headers = {};
         }
+    }
+    if (!headers) {
+        headers = {};
     }
     //默认值
     var defaultHeader = {
@@ -153,7 +149,21 @@ function parseHeader(mockData, qs, post, req) {
     if (!mockData.status) {
         mockData.status = 200;
     }
-    mockData.headers = Object.assign({}, defaultHeader, headers);
+    mergeHeader(headers, defaultHeader);
+    mockData.headers = headers
+}
+
+// Header不区分大小写
+function mergeHeader(target, merge) {
+    var map = {}
+    Object.keys(target).map(name => {
+        map[name.toLowerCase()] = 1
+    })
+    Object.keys(merge).map(name => {
+        if (!map[name.toLowerCase()]) {
+            target[name] = merge[name]
+        }
+    })
 }
 
 function readPost(req, callback) {
@@ -167,14 +177,12 @@ function readPost(req, callback) {
             if (qBody) {
                 try {
                     qBody = eval('(' + qBody + ')'); //尝试将json字符串转为对象
-                }
-                catch (e) {
+                } catch (e) {
                 }
             }
             callback(qBody)
         });
-    }
-    else {
+    } else {
         callback({})
     }
 }
@@ -184,11 +192,9 @@ function callFn(fn, mockData, qs, post, req) {
         var body = fn.call(mockData, qs, post, req.headers, req)
         if (body.then && body.catch) {
             return body
-        }
-        else
+        } else
             return Promise.resolve(body);
-    }
-    catch (e) {
+    } catch (e) {
         var r = 'ERR in js func: ' + '\n' + fn.toString()
         console.error(e);
         return Promise.reject(r)

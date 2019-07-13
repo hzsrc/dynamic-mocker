@@ -1,7 +1,7 @@
-var getConfig = require('./src/getConfig.js')
-var byMock = require('./src/byMock.js')
-var byProxy = require('./src/byProxy.js')
-// var byStatic = require('./byStatic.js')
+var getConfig = require('./getConfig.js')
+var byMock = require('./byMock.js')
+var byProxy = require('./byProxy.js')
+var byStatic = require('./byStatic.js')
 
 var config, proxy, server;
 
@@ -15,9 +15,9 @@ function onHandle(req, res) {
     // next()
     byMock(req, res, () => {
         byProxy(req, res, () => {
-            // byStatic(req, res, () => {
-            show404(req, res)
-            // })
+            byStatic(req, res, () => {
+                show404(req, res)
+            })
         })
     })
 }
@@ -25,7 +25,7 @@ function onHandle(req, res) {
 
 function start(configOrConfigFile, handler) {
     config = getConfig(configOrConfigFile, restart, true)
-    var createServer = require('./src/create-server.js')
+    var createServer = require('./create-server.js')
     process.title = 'dynamic-mocker';
     console.log('Current path: ' + process.cwd()
         + '\nMock root path: ' + config.mockPath
@@ -54,10 +54,14 @@ function checkStart(configFile, handler) {
 }
 
 function show404(req, res) {
-    var resp = {headers: {}}
+    var resp = {
+        headers: {
+            'Content-Type': 'text/html'
+        }
+    }
     config.beforeResponse && config.beforeResponse(resp, req);
     res.writeHead(404, resp.headers);
-    res.end('NOT FOUND:\t' + req.url);
+    res.end('NOT FOUND:\t' + req.url + '<br/><hr/><i>dynamic-mocker</i>');
 }
 
 module.exports = {

@@ -5,6 +5,23 @@ Please see the [sample project](https://github.com/hzsrc/dynamic-mocker-sample) 
 ![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker.png)
 ![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker-en.png)
 
+# Live demos
+
+````bash
+git clone https://github.com/hzsrc/dynamic-mocker.git
+cd dynamic-mocker
+npm install
+
+# mock & proxy
+npm run mock
+
+#proxy
+npm run proxy80
+
+#static
+npm run static
+
+````
 # Usage
 
 ## 1. install
@@ -80,7 +97,7 @@ Edit the mock-config.js options:
 ## 6. Create js files for dynamic-mocker in the mock/root directory
 ### Simple js file:
 	// dynamic-mocker use json eval mode, but not JSON.parse
-	module.export = {
+	module.exports = {
 		disabled: 0,
         delay: 1000, // delay ms to response
 		status: 200,
@@ -111,7 +128,7 @@ Edit the mock-config.js options:
 		}
 	}
 ### Js file with functions:
-    module.export = {
+    module.exports = {
         disabled: 0,
         body: function (query, post, header, request) {
             //output log in the node console

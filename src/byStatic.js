@@ -2,37 +2,40 @@ var fs = require('fs');
 var getConfig = require('./getConfig.js')
 var config, proxy;
 var mime = require('mime')//引入mime模块
-
+var url = require('url')
+var path = require('path')
 
 function byStatic(req, res, next) {
     config = getConfig()
     var urlPart = url.parse(req.url);
     if (config.static) {
         var pathname = urlPart.pathname;
-        // if (config.mapFile) {
-        //     pathname = config.mapFile(pathname, req)
-        // }
-        var staticFile = path.join(config.static.path, pathname + '.js');
+        var staticFile = path.join(config.static.path, pathname);
         if (fs.existsSync(staticFile)) {
+            if (fs.statSync(staticFile).isDirectory()) {
+                staticFile += urlPart.index || 'index.html.js.js.html';
+            }
             staticByFile(req, res, staticFile);
-        }
-        else {
+        } else {
             next()
         }
+    } else {
+        next()
     }
-
 }
 
 function staticByFile(req, res, staticFile) {
     fs.readFile(staticFile, (err, data) => {
         if (err) {
-            throw err                                                                              //阻止程序继续往下运行
+            console.error(err)
+            res.writeHead(500, {});
+            res.end('Internal error');
+        } else {
+            res.writeHead(200, {
+                'Content-type': mime.getType(staticFile) //通过后缀名指定mime类型
+            });
+            res.end(data);
         }
-
-        res.writeHead(200, {
-            'Content-type': mime.getType(staticFile) //通过后缀名指定mime类型
-        });
-        res.end(data);
     })
 }
 
