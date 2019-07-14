@@ -1,4 +1,5 @@
 var path = require('path')
+var fs = require('fs')
 var webpack = require('webpack')
 
 function resolve(dir) {
@@ -11,7 +12,7 @@ var webpackConfig = {
         app: resolve('src/app.js')
     },
     output: {
-        path: resolve('./'),
+        path: resolve('../../preview'),
         filename: '[name].js',
         publicPath: '',
     },
@@ -40,5 +41,6 @@ webpack(webpackConfig, (err, stats) => {
         chunkModules: false
     }) + '\n\n')
 
+    fs.writeFileSync(path.join(webpackConfig.output.path, 'index.html'), fs.readFileSync(resolve('index.html')))
     console.log('  Build complete.\n')
 })

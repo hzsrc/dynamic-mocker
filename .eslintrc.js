@@ -7,7 +7,7 @@ module.exports = {
         sourceType: 'module'
     },
     env: {
-        browser: false,
+        browser: true,
         jest: true,
     },
     extends: [

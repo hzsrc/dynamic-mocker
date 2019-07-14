@@ -5,9 +5,9 @@
     "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
     "static": "node ./run.js demo/static_svc/config-static.js",
     "proxy-all": "node ./run.js ./config-proxy-all.js",
-    "client": "node demo/client/build/webpack.js",
-    "test": "jest --clearCache && jest",
-    "fixlint": "eslint --fix --ext .js,.vue src"
+    "preview": "node ./demo/client/build/webpack.js",
+    "test": "jest",
+    "fixlint": "eslint --fix --ext .js src demo build test demo/client/src"
   },
   "dependencies": {
     "http-proxy": "^1.12.0",
