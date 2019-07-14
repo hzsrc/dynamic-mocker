@@ -15,7 +15,7 @@ npm install
 # mock & proxy
 npm run mock
 
-#proxy
+#proxy:  http://localhost:8037 => https://localhost
 npm run proxy80
 
 #static

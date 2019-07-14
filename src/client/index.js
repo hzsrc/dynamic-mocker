@@ -1,7 +1,7 @@
 import mockXhr from './xhr'
 
 export default {
-    setUpXHR(config) {
+    setUp(config) {
         window.XMLHttpRequest = mockXhr
         mockXhr.Mock = {
             _mocked: {

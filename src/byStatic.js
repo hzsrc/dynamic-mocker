@@ -1,6 +1,6 @@
 var fs = require('fs');
 var getConfig = require('./getConfig.js')
-var config, proxy;
+var config;
 var mime = require('mime')//引入mime模块
 var url = require('url')
 var path = require('path')

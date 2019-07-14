@@ -1,4 +1,4 @@
-var path = require('path'), fs = require('fs');
+var path = require('path'); var fs = require('fs');
 var config;
 var watcher;
 var timeHd = 0;
