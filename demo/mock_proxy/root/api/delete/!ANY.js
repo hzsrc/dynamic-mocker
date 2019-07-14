@@ -6,6 +6,7 @@ module.exports = {
         return {
             status: 200,
             url: req.url,
+            method: req.method,
             data: 'success: ' + query.ThisUrlPart,
         }
     }
