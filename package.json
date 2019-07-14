@@ -1,6 +1,6 @@
 {
   "name": "dynamic-mocker",
-  "version": "1.2.2-beta1",
+  "version": "1.2.2-beta2",
   "scripts": {
     "build": "node build/webpack.js",
     "mock": "node run.js demo/mock_proxy/config.js",
