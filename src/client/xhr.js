@@ -178,7 +178,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
             }
         })
 
-        this.custom.timeout = function (timeout) {
+        this.custom.timeout = (function (timeout) {
             if (typeof timeout === 'number') return timeout
             if (typeof timeout === 'string' && !~timeout.indexOf('-')) return parseInt(timeout, 10)
             if (typeof timeout === 'string' && ~timeout.indexOf('-')) {
@@ -187,7 +187,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
                 var max = parseInt(tmp[1], 10)
                 return Math.round(Math.random() * (max - min)) + min
             }
-        }(MockXMLHttpRequest._settings.timeout)
+        }(MockXMLHttpRequest._settings.timeout))
 
         // 查找与请求参数匹配的数据模板
         var item = find(this.custom.options)
@@ -345,7 +345,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
         }
         return headers
     },
-    overrideMimeType: function ( /*mime*/) {
+    overrideMimeType: function (/*mime*/) {
     },
     responseType: '', // '', 'text', 'arraybuffer', 'blob', 'document', 'json'
     response: null,
@@ -381,16 +381,16 @@ Util.extend(MockXMLHttpRequest.prototype, {
 
 // Inspired by jQuery
 function createNativeXMLHttpRequest() {
-    var isLocal = function () {
+    var isLocal = (function () {
         var rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/
         var rurl = /^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/
         var ajaxLocation = location.href
         var ajaxLocParts = rurl.exec(ajaxLocation.toLowerCase()) || []
         return rlocalProtocol.test(ajaxLocParts[1])
-    }()
+    }())
 
     return window.ActiveXObject ?
-        (!isLocal && createStandardXHR() || createActiveXHR()) : createStandardXHR()
+        ((!isLocal && createStandardXHR()) || createActiveXHR()) : createStandardXHR()
 
     function createStandardXHR() {
         try {

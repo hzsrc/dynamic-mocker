@@ -4,10 +4,10 @@
 var Util = {}
 
 Util.extend = function extend() {
-    var target = arguments[0] || {},
-        i = 1,
-        length = arguments.length,
-        options, name, src, copy, clone
+    var target = arguments[0] || {};
+    var i = 1;
+    var length = arguments.length;
+    var options; var name; var src; var copy; var clone
 
     if (length === 1) {
         target = this
@@ -101,13 +101,13 @@ Util.values = function(obj) {
         var tpl = Mock.heredoc(function() {
             /*!
         {{email}}{{age}}
-        <!-- Mock { 
+        <!-- Mock {
             email: '@EMAIL',
             age: '@INT(1,100)'
         } -->
             *\/
         })
-    
+
     **相关阅读**
     * [Creating multiline strings in JavaScript](http://stackoverflow.com/questions/805107/creating-multiline-strings-in-javascript)、
 */

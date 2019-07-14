@@ -10,7 +10,7 @@ module.exports = {
     body: {
         status: 0,
         delayed: '2 seconds',
-        obj: {
+        data: {
             cfg: {
                 o: {
                     buttons: [

@@ -28,9 +28,8 @@ function proxyByWeb(req, res, next) {
         var target = getProxyTarget(urlPart, config.proxyTarget);
         console.log('proxy:\t' + urlPart.pathname + '\t=>\t' + target + urlPart.pathname);
         req.headers.host = url.parse(target).hostname; //不设置的话，远程用ip访问会出错
-        getProxy().web(req, res, {target: target});
-    }
-    else {
+        getProxy().web(req, res, { target: target });
+    } else {
         next()
     }
 }

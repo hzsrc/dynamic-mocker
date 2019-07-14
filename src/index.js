@@ -3,7 +3,7 @@ var byMock = require('./byMock.js')
 var byProxy = require('./byProxy.js')
 var byStatic = require('./byStatic.js')
 
-var config, proxy, server;
+var config, server;
 
 
 function onHandle(req, res) {
