@@ -31,3 +31,4 @@ var webpackConfig = {
     plugins: []
 }
 module.exports = webpackConfig
+

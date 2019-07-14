@@ -10,7 +10,7 @@
     "preview": "node demo/client_preview/build/build.js",
     "dev": "node demo/client_preview/build/dev-server.js",
     "test": "jest",
-    "fixlint": "eslint --fix --ext .js src demo build test demo/client_preview/src",
+    "fixlint": "eslint --fix --ext .js src demo build test",
     "prepublish": "npm run fixlint && npm test && npm run build"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "@babel/core": "^7.4.5",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-syntax-jsx": "^7.2.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-stage-2": "^7.0.0",
@@ -40,6 +41,7 @@
     "eslint-plugin-node": "9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "4.0.0",
+    "eslint-plugin-vue": "^5.2.3",
     "express": "^4.17.1",
     "jest": "^24.8.0",
     "webpack": "^4.35.3",
@@ -57,5 +59,9 @@
     "src",
     "lib",
     "ssl"
-  ]
+  ],
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  }
 }

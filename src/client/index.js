@@ -70,13 +70,13 @@ export default {
         })
     }
 }
-
-function getProxyTarget(urlPart, proxyTarget) {
-    if (typeof proxyTarget === 'function') {
-        return proxyTarget(urlPart)
-    }
-    return proxyTarget
-}
+//
+// function getProxyTarget(urlPart, proxyTarget) {
+//     if (typeof proxyTarget === 'function') {
+//         return proxyTarget(urlPart)
+//     }
+//     return proxyTarget
+// }
 
 function UrlLite(url) {
     var pos = url.indexOf('//')

@@ -123,4 +123,4 @@ Util.heredoc = function heredoc(fn) {
 
 Util.noop = function() {}
 
-module.exports = Util
+export default Util

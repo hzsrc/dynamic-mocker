@@ -40,7 +40,7 @@
     onreadystatechange  readystatechange
  */
 
-var Util = require('./util')
+import Util from './util'
 
 // 备份原生 XMLHttpRequest
 window._XMLHttpRequest = window.XMLHttpRequest
@@ -279,7 +279,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
     // Initiates the request.
     send: function (data) {
         if (this._waitOpen) {
-            this._waitOpen.finally(this._syncSend.bind(null, data))
+            this._waitOpen.finally(this._syncSend.bind(this, data))
         } else {
             this._syncSend(data)
         }
@@ -448,4 +448,4 @@ function runPromiseIf(promiseOrData, resolve, reject) {
     }
 }
 
-module.exports = MockXMLHttpRequest
+export default MockXMLHttpRequest

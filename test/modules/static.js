@@ -8,7 +8,7 @@ test('static html', () => {
 })
 
 test('static js', () => {
-    return http('get', 'http://localhost/a.js', { type: 'test' }).then(res => {
+    return http('get', 'http://localhost/app.js', { type: 'test' }).then(res => {
         expect(res).toMatch(/alert\('hello~'\)/)
     })
 })

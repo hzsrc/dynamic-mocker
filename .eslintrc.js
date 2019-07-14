@@ -13,11 +13,14 @@ module.exports = {
     extends: [
         // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
         // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
+        'plugin:vue/essential',
         // https://github.com/standard/standard/blob/master/docs/RULES-en.md
         'standard'
     ],
     // required to lint *.vue files
-    plugins: [],
+    plugins: [
+        'vue'
+    ],
     // add your custom rules here
     'rules': {
         //"off"或0 -关闭规则
@@ -25,6 +28,7 @@ module.exports = {
         //"error"或2 - 开启规则, 使用错误 程序退出
 
         'indent': ['error', 4],
+        'vue/script-indent': ['error', 4, { 'baseIndent': 1 }],
         //分号
         'semi': 'off',
         'spaced-comment': 'off',
@@ -58,4 +62,12 @@ module.exports = {
         'standard/no-callback-literal': 1,
         'node/no-deprecated-api': 1,
     },
+    'overrides': [
+        {
+            'files': ['*.vue'],
+            'rules': {
+                'indent': 'off'
+            }
+        }
+    ]
 }
