@@ -11,6 +11,7 @@ module.exports = {
         status: 0,
         delayed: '2 seconds',
         data: {
+            ok: true,
             cfg: {
                 o: {
                     buttons: [

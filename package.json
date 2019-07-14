@@ -7,7 +7,8 @@
     "proxy-all": "node ./run.js ./config-proxy-all.js",
     "preview": "node ./demo/client/build/webpack.js",
     "test": "jest",
-    "fixlint": "eslint --fix --ext .js src demo build test demo/client/src"
+    "fixlint": "eslint --fix --ext .js src demo build test demo/client/src",
+    "prepublish": "npm run fixlint && npm test && npm run build"
   },
   "dependencies": {
     "http-proxy": "^1.12.0",

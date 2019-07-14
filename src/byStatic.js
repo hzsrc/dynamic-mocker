@@ -13,7 +13,7 @@ function byStatic(req, res, next) {
         var staticFile = path.join(config.static.path, pathname);
         if (fs.existsSync(staticFile)) {
             if (fs.statSync(staticFile).isDirectory()) {
-                staticFile += urlPart.index || 'index.html.js.js.html';
+                staticFile = path.join(staticFile, urlPart.index || 'index.html');
             }
             staticByFile(req, res, staticFile);
         } else {

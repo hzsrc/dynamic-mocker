@@ -72,3 +72,12 @@ module.exports = {
     byProxy,
     close,
 }
+
+//当子线程send的时候触发此方法
+process.stdin.on('data', function (msg) {
+    if (msg.toString() === 'closeServer') {
+        // console.log('EXIT by closeServer')
+        close()
+        process.exit(0)
+    }
+});
