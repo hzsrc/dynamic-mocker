@@ -27,13 +27,14 @@ const config = {
         // }
     },
     //映射处理文件。用于处理动态url，比如：/delete-article/233 。生成的参数可以放在req.query里面。
-    mapFile(pathname, req) {
-        var m = pathname.match(/(\/delete\-article)\/(\d+)/)
-        if (m) {
-            req.query.articleId = m[2]
-            return m[1]
-        }
-        return pathname
-    }
+    // mapFile(pathname, req) {
+    //     var m = pathname.match(/(\/delete\-article)\/(\d+)/)
+    //     if (m) {
+    //         req.query.articleId = m[2]
+    //         return m[1]
+    //     }
+    //     return pathname
+    // },
+    samePreview: false, // true - mock预览时disabled开关也生效（默认false,预览时忽略所有开关）
 }
 module.exports = config;

@@ -27,3 +27,11 @@ test('https mock json delayed', () => {
         expect(new Date() - start).toBeGreaterThanOrEqual(2000)
     })
 })
+
+
+test('https mock json options', () => {
+    return http.axios.options('https://localhost/').then(res => {
+        expect(res.headers['access-control-allow-credentials']).toMatch(/true/)
+        expect(res.data).toMatch(/OPTIONS OK/)
+    })
+})

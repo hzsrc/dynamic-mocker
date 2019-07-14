@@ -28,6 +28,13 @@ test('mock json delayed', () => {
     })
 })
 
+test('mock json options', () => {
+    return http.axios.options('http://localhost:8037/').then(res => {
+        expect(res.headers['access-control-allow-credentials']).toMatch(/true/)
+        expect(res.data).toMatch(/OPTIONS OK/)
+    })
+})
+
 
 test('mock html', () => {
     return http('get', 'http://localhost:8037/').then(res => {

@@ -16,3 +16,5 @@ module.exports = function http(method, url, data) {
         secure: false,
     }).then(res => res.data || res || {})
 }
+
+module.exports.axios = myAxios

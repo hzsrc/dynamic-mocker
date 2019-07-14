@@ -6,7 +6,8 @@ export default {
         window.XMLHttpRequest = MockXhr
         MockXhr.setup({
             find(custom) {
-                if (config.disabled) {
+                if (!config.mockEnabled && config.samePreview) {
+                    // 返回null走实际的ajax
                     return null
                 }
                 var urlObj = new UrlLite(custom.options.url || '')
@@ -25,10 +26,9 @@ export default {
                     .then(r => {
                         var mockData = r.default || r
                         mockData.urlObj = urlObj
-                        return mockData.disabled ? null : mockData
+                        return mockData.disabled && config.samePreview ? null : mockData
                     })
                     .catch(e => {
-                        console.log(e)
                         return null
                     })
             },

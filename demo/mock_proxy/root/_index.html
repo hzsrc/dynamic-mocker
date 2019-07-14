@@ -21,6 +21,12 @@
         <td>HTTP DELETE with pattern url: '/api/delete/:id'</td>
     </tr>
     <tr>
+        <td>
+            <button onclick="getData('options', '/api/delete/' + (+new Date()))">mock: options, pattern url</button>
+        </td>
+        <td>HTTP OPTIONS pattern url: '/api/delete/:id'</td>
+    </tr>
+    <tr>
         <td><a href="/api/img"><img src="/api/img"/></a></td>
         <td>Image</td>
     </tr>
@@ -36,7 +42,7 @@
 <table>
     <tr>
         <td>
-            <button onclick="getData('get', '/s?wd=dynamic-mocker', '', 'text')">proxy to baidu search</button>
+            <button onclick="getData('get', '/s?wd=dynamic-mocker')">proxy to baidu search</button>
         </td>
         <td>Proxy to https://www.baidu.com</td>
     </tr>
