@@ -138,11 +138,24 @@ function MockXMLHttpRequest() {
 }
 
 MockXMLHttpRequest._settings = {
-    timeout: '10-100',
     /*
         timeout: 50,
         timeout: '10-100',
      */
+    timeout: '10-100',
+
+    // 根据请求获取项目
+    find: function (custom) {
+        return false
+    },
+    // 返回响应数据
+    doResponse: function (custom) {
+        return {
+            status: 200,
+            body: '',
+            headers: custom.responseHeaders,
+        }
+    },
 }
 
 MockXMLHttpRequest.setup = function (settings) {
@@ -190,25 +203,13 @@ Util.extend(MockXMLHttpRequest.prototype, {
         }(MockXMLHttpRequest._settings.timeout))
 
         // 查找与请求参数匹配的数据模板
-        var item = find(this.custom.options)
+        var item = MockXMLHttpRequest._settings.find(this.custom)
+        this._waitOpen = runPromiseIf(item, mockOrRequest, realRequest)
 
-        function handle(event) {
-            // 同步属性 NativeXMLHttpRequest => MockXMLHttpRequest
-            for (var i = 0; i < XHR_RESPONSE_PROPERTIES.length; i++) {
-                try {
-                    that[XHR_RESPONSE_PROPERTIES[i]] = xhr[XHR_RESPONSE_PROPERTIES[i]]
-                } catch (e) {
-                }
-            }
-            // 触发 MockXMLHttpRequest 上的同名事件
-            that.dispatchEvent(new Event(event.type /*, false, false, that*/))
-        }
-
-        // 如果未找到匹配的数据模板，则采用原生 XHR 发送请求。
-        if (!item) {
+        function realRequest() {
             // 创建原生 XHR 对象，调用原生 open()，监听所有原生事件
             var xhr = createNativeXMLHttpRequest()
-            this.custom.xhr = xhr
+            that.custom.xhr = xhr
 
             // 初始化所有事件，用于监听原生 XHR 对象的事件
             for (var i = 0; i < XHR_EVENTS.length; i++) {
@@ -227,14 +228,35 @@ Util.extend(MockXMLHttpRequest.prototype, {
                 }
             }
 
-            return
+
+            function handle(event) {
+                // 同步属性 NativeXMLHttpRequest => MockXMLHttpRequest
+                for (var i = 0; i < XHR_RESPONSE_PROPERTIES.length; i++) {
+                    try {
+                        that[XHR_RESPONSE_PROPERTIES[i]] = xhr[XHR_RESPONSE_PROPERTIES[i]]
+                    } catch (e) {
+                    }
+                }
+                // 触发 MockXMLHttpRequest 上的同名事件
+                that.dispatchEvent(new Event(event.type /*, false, false, that*/))
+            }
         }
 
-        // 找到了匹配的数据模板，开始拦截 XHR 请求
-        this.match = true
-        this.custom.template = item
-        this.readyState = MockXMLHttpRequest.OPENED
-        this.dispatchEvent(new Event('readystatechange' /*, false, false, this*/))
+        function mockOrRequest(item) {
+            // 如果未找到匹配的数据模板，则采用原生 XHR 发送请求。
+            if (!item) {
+                realRequest()
+                return
+            }
+
+            // 找到了匹配的数据模板，开始拦截 XHR 请求
+            that.match = true
+            that.custom.template = item
+            that.readyState = MockXMLHttpRequest.OPENED
+            that.dispatchEvent(new Event('readystatechange' /*, false, false, that*/))
+
+            this._waitOpen = null
+        }
     },
     // https://xhr.spec.whatwg.org/#the-setrequestheader()-method
     // Combines a header in author request headers.
@@ -255,7 +277,14 @@ Util.extend(MockXMLHttpRequest.prototype, {
     upload: {},
     // https://xhr.spec.whatwg.org/#the-send()-method
     // Initiates the request.
-    send: function send(data) {
+    send: function (data) {
+        if (this._waitOpen) {
+            this._waitOpen.finally(this._syncSend.bind(null, data))
+        } else {
+            this._syncSend(data)
+        }
+    },
+    _syncSend: function send(data) {
         var that = this
         this.custom.options.body = data
 
@@ -282,19 +311,23 @@ Util.extend(MockXMLHttpRequest.prototype, {
             that.readyState = MockXMLHttpRequest.LOADING
             that.dispatchEvent(new Event('readystatechange' /*, false, false, that*/))
 
-            that.status = 200
-            that.statusText = HTTP_STATUS_CODES[200]
 
-            // fix #92 #93 by @qddegtya
-            that.response = that.responseText = JSON.stringify(
-                convert(that.custom.template, that.custom.options),
-                null, 4
-            )
+            var responseDataOrPromise = MockXMLHttpRequest._settings.doResponse(that.custom)
+            runPromiseIf(responseDataOrPromise, doneIt, doneIt)
 
-            that.readyState = MockXMLHttpRequest.DONE
-            that.dispatchEvent(new Event('readystatechange' /*, false, false, that*/))
-            that.dispatchEvent(new Event('load' /*, false, false, that*/));
-            that.dispatchEvent(new Event('loadend' /*, false, false, that*/));
+            function doneIt(responseData) {
+                that.status = responseData.status
+                that.statusText = HTTP_STATUS_CODES[that.status]
+                that.custom.responseHeaders = responseData.headers
+
+                // 传入前已转换为string
+                that.response = that.responseText = responseData.body
+
+                that.readyState = MockXMLHttpRequest.DONE
+                that.dispatchEvent(new Event('readystatechange' /*, false, false, that*/))
+                that.dispatchEvent(new Event('load' /*, false, false, that*/));
+                that.dispatchEvent(new Event('loadend' /*, false, false, that*/));
+            }
         }
     },
     // https://xhr.spec.whatwg.org/#the-abort()-method
@@ -355,15 +388,15 @@ Util.extend(MockXMLHttpRequest.prototype, {
 
 // EventTarget
 Util.extend(MockXMLHttpRequest.prototype, {
-    addEventListener: function addEventListener(type, handle) {
+    addEventListener: function addEventListener(type, handler) {
         var events = this.custom.events
         if (!events[type]) events[type] = []
-        events[type].push(handle)
+        events[type].push(handler)
     },
-    removeEventListener: function removeEventListener(type, handle) {
+    removeEventListener: function removeEventListener(type, handler) {
         var handles = this.custom.events[type] || []
         for (var i = 0; i < handles.length; i++) {
-            if (handles[i] === handle) {
+            if (handles[i] === handler) {
                 handles.splice(i--, 1)
             }
         }
@@ -407,36 +440,12 @@ function createNativeXMLHttpRequest() {
     }
 }
 
-
-// 查找与请求参数匹配的数据模板：URL，Type
-function find(options) {
-
-    for (var sUrlType in MockXMLHttpRequest.Mock._mocked) {
-        var item = MockXMLHttpRequest.Mock._mocked[sUrlType]
-        if (
-            (!item.rurl || match(item.rurl, options.url)) &&
-            (!item.rtype || match(item.rtype, options.type.toLowerCase()))
-        ) {
-            // console.log('[mock]', options.url, '>', item.rurl)
-            return item
-        }
+function runPromiseIf(promiseOrData, resolve, reject) {
+    if (promiseOrData && promiseOrData.then) {
+        return promiseOrData.then(resolve).catch(reject)
+    } else {
+        return resolve(promiseOrData)
     }
-
-    function match(expected, actual) {
-        if (Util.type(expected) === 'string') {
-            return expected === actual
-        }
-        if (Util.type(expected) === 'regexp') {
-            return expected.test(actual)
-        }
-    }
-
-}
-
-// 数据模板 ＝> 响应数据
-function convert(item, options) {
-    return Util.isFunction(item.template) ?
-        item.template(options) : MockXMLHttpRequest.Mock.mock(item.template)
 }
 
 module.exports = MockXMLHttpRequest

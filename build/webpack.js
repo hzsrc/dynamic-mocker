@@ -14,6 +14,8 @@ var webpackConfig = {
         path: resolve('lib'),
         filename: '[name].js',
         publicPath: '',
+        library: 'DMockClient',
+        libraryTarget: 'umd'
     },
     module: {
         rules: [
@@ -25,6 +27,9 @@ var webpackConfig = {
                 ],
             },
         ]
+    },
+    optimization: {
+        minimize: false,
     }
 }
 

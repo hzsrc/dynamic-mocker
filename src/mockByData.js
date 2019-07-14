@@ -1,13 +1,12 @@
 //var getConfig = require('./getConfig.js')
 
 //使用js文件模拟内容输出
-function mockByData(mockData, config, req, fnResponse, byNextPath) {
+function mockByData(config, mockData, req, fnResponse, byNextPath) {
     /*
         req = {
             method: String,
             url: String,
             query: Object,
-            post: Object,
             headers: Object,
             getData: Function(callback)
         }
@@ -24,7 +23,7 @@ function mockByData(mockData, config, req, fnResponse, byNextPath) {
         config.beforeResponse && config.beforeResponse(mockData, req);
         fnResponse(200, mockData.headers, 'OPTIONS OK');
     } else {
-        readPost(req, post => {
+        req.readReqData(post => {
             var qs = req.query;
             parseBody(mockData, qs, post, req).then(body => {
                 mockData.body = body;
@@ -113,27 +112,6 @@ function mergeHeader(target, merge) {
             target[name] = merge[name]
         }
     })
-}
-
-function readPost(req, callback) {
-    if (req.method == 'POST') {
-        var qBody = '';
-        req.on('data', function (data) {
-            qBody += data;
-        });
-
-        req.on('end', function () {
-            if (qBody) {
-                try {
-                    qBody = eval('(' + qBody + ')'); //尝试将json字符串转为对象
-                } catch (e) {
-                }
-            }
-            callback(qBody)
-        });
-    } else {
-        callback({})
-    }
 }
 
 function callFn(fn, mockData, qs, post, req) {

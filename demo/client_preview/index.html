@@ -1,48 +1,54 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <script src="app.js"></script>
+</head>
 <body>
 <h5>Mock</h5>
 <table>
     <tr>
         <td>
-            <button onclick="getData('get', '/api/_func?id=11223')">mock: get</button>
+            <button onclick="getData('get', 'http://server1.com/api/_func?id=11223')">mock: get</button>
         </td>
         <td>HTTP GET</td>
     </tr>
     <tr>
         <td>
-            <button onclick="getData('post', '/api/_json?id=11223', {type:'test'})">mock: post, delay</button>
+            <button onclick="getData('post', 'http://server2.com/api/_json?id=11223', {type:'test'})">mock: post,
+                delay
+            </button>
         </td>
         <td>HTTP POST with delayed</td>
     </tr>
     <tr>
         <td>
-            <button onclick="getData('post', '/api/delete/' + (+new Date()))">mock: delete, pattern url</button>
+            <button onclick="getData('post', 'http://server1.com/api/delete/' + (+new Date()))">mock: delete, pattern
+                url
+            </button>
         </td>
         <td>HTTP DELETE with pattern url: '/api/delete/:id'</td>
-    </tr>
-    <tr>
-        <td><a href="/api/img"><img src="/api/img"/></a></td>
-        <td>Image</td>
-    </tr>
-    <tr>
-        <td><a href="api/attachment">download</a></td>
-        <td>Attachment</td>
     </tr>
 </table>
 
 
 <hr/>
-<h5>Proxy</h5>
+<h5>Real ajax</h5>
 <table>
     <tr>
         <td>
-            <button onclick="getData('get', '/s?wd=dynamic-mocker', '', 'text')">proxy to baidu search</button>
+            <button onclick="getData('post', 'https://api.weixin.qq.com/tcb/invokecloudfunction?access_token=ACCESS_TOKEN&env=ENV&name=FUNCTION_NAME')">
+                proxy to baidu search
+            </button>
         </td>
         <td>Proxy to https://www.baidu.com</td>
     </tr>
     <tr>
         <td>
-            <button onclick="getData('get', '/users/hzsrc/starred')">proxy to github</button>
+            <button onclick="getData('get', 'https://api.github.com/users/hzsrc/starred')">proxy to github</button>
         </td>
         <td>Proxy to https://api.github.com</td>
     </tr>
@@ -53,21 +59,22 @@
 <script>
 function getData(method, url, data, type) {
     var a = document.getElementById('url')
-    a.href = a.innerText = location.origin + url
+    a.href = location.origin + url
+    a.innerText = method.toUpperCase() + ': ' + location.origin + url
     var ret = document.getElementById('ret')
     ret.value = 'loading...'
     if (data) {
         data = JSON.stringify(data)
     }
-    return ajax(method, url, data).then(json => {
+    return ajax(method, url, data).then(function (json) {
         ret.value = typeof json === 'string' ? json : JSON.stringify(json, null, 4)
-    }).catch(t => {
+    }).catch(function (t) {
         ret.value = t
     })
 }
 
 function ajax(method, url, data) {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         var request = new XMLHttpRequest();
         request.open(method, url);
         request.send(data);

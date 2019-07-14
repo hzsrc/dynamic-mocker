@@ -1,13 +1,16 @@
 {
+  "name": "dynamic-mocker",
+  "version": "1.2.2-beta1",
   "scripts": {
     "build": "node build/webpack.js",
     "mock": "node run.js demo/mock_proxy/config.js",
     "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
     "static": "node ./run.js demo/static_svc/config-static.js",
     "proxy-all": "node ./run.js ./config-proxy-all.js",
-    "preview": "node ./demo/client/build/webpack.js",
+    "preview": "node demo/client_preview/build/build.js",
+    "dev": "node demo/client_preview/build/dev-server.js",
     "test": "jest",
-    "fixlint": "eslint --fix --ext .js src demo build test demo/client/src",
+    "fixlint": "eslint --fix --ext .js src demo build test demo/client_preview/src",
     "prepublish": "npm run fixlint && npm test && npm run build"
   },
   "dependencies": {
@@ -37,8 +40,11 @@
     "eslint-plugin-node": "9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "4.0.0",
+    "express": "^4.17.1",
     "jest": "^24.8.0",
-    "webpack": "^4.35.3"
+    "webpack": "^4.35.3",
+    "webpack-dev-middleware": "^3.7.0",
+    "webpack-hot-middleware": "^2.25.0"
   },
   "author": {
     "name": "HuangZheng"
@@ -49,8 +55,7 @@
   "main": "src/index.js",
   "files": [
     "src",
-    "lib"
-  ],
-  "name": "dynamic-mocker",
-  "version": "1.2.1"
+    "lib",
+    "ssl"
+  ]
 }

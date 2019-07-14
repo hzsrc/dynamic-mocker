@@ -27,8 +27,8 @@ function byMock(req, res, next) {
                         //模拟数据，从mock文件夹获取
                         mockByFile(config, req, res, mockFile, byNextPath);
                     } else {
-                        // 像`/api/delete/[id]`，这样的动态url走 `!ANY.js`，设置query.ThisUrlPart=[id]
-                        mockFile = path.join(paths[i], path.dirname(pathname), '!ANY.js');
+                        // 像`/api/delete/[id]`，这样的动态url走 `__DEFAULT.js`，设置query.ThisUrlPart=[id]
+                        mockFile = path.join(paths[i], path.dirname(pathname), '__DEFAULT.js');
                         if (fs.existsSync(mockFile)) {
                             req.query.ThisUrlPart = path.basename(pathname)
                             mockByFile(config, req, res, mockFile, byNextPath);
@@ -62,7 +62,7 @@ function mockByFile(config, req, res, mockFile, byNextPath) {
         //var mockData = require(fullMockFile) || {};
         var mockData = eval(js)
         req.readReqData = readPost.bind(null, req)
-        return mockByData(mockData, config, req, responseFn, byNextPath)
+        return mockByData(config, mockData, req, responseFn, byNextPath)
     } catch (e) {
         var error = `Error in file:${mockFile}:\n` + e;
         console.error(error);
