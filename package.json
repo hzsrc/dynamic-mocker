@@ -2,13 +2,13 @@
   "name": "dynamic-mocker",
   "version": "1.2.2-beta2",
   "scripts": {
+    "dev": "node demo/client_preview/build/dev-server.js",
     "build": "node build/webpack.js",
     "mock": "node run.js demo/mock_proxy/config.js",
     "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
     "static": "node ./run.js demo/static_svc/config-static.js",
     "proxy-all": "node ./run.js ./config-proxy-all.js",
     "preview": "node demo/client_preview/build/build.js",
-    "dev": "node demo/client_preview/build/dev-server.js",
     "test": "jest",
     "fixlint": "eslint --fix --ext .js src demo build test",
     "prepublish": "npm run fixlint && npm test && npm run build"

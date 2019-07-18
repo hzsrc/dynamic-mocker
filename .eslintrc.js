@@ -27,7 +27,7 @@ module.exports = {
         //"warn" 或1 - 开启规则, 使用警告 程序不会退出
         //"error"或2 - 开启规则, 使用错误 程序退出
 
-        'indent': ['error', 4],
+        'indent': ['error', 2],
         'vue/script-indent': ['error', 4, { 'baseIndent': 1 }],
         //分号
         'semi': 'off',

@@ -58,44 +58,45 @@
 <textarea id="ret" rows="26" style="width: 100%"></textarea>
 <script>
 function getData(method, url, data, type) {
-    var a = document.getElementById('url')
-    a.href = location.origin + url
-    a.innerText = method.toUpperCase() + ': ' + location.origin + url
-    var ret = document.getElementById('ret')
-    ret.value = 'loading...'
-    if (data) {
-        data = JSON.stringify(data)
-    }
-    return ajax(method, url, data).then(function (json) {
-        ret.value = typeof json === 'string' ? json : JSON.stringify(json, null, 4)
-    }).catch(function (t) {
-        ret.value = t
-    })
+  var a = document.getElementById('url')
+  var pathname = url.replace(/https?:\/\/[^/]+\//, '/')
+  a.href = location.origin + pathname
+  a.innerText = method.toUpperCase() + ': ' + location.origin + pathname
+  var ret = document.getElementById('ret')
+  ret.value = 'loading...'
+  if (data) {
+    data = JSON.stringify(data)
+  }
+  return ajax(method, url, data).then(function (json) {
+    ret.value = typeof json === 'string' ? json : JSON.stringify(json, null, 4)
+  }).catch(function (t) {
+    ret.value = t
+  })
 }
 
 function ajax(method, url, data) {
-    return new Promise(function (resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open(method, url);
-        request.send(data);
+  return new Promise(function (resolve, reject) {
+    var request = new XMLHttpRequest();
+    request.open(method, url);
+    request.send(data);
 
-        request.onreadystatechange = function () {
-            if (request.readyState === 4) {
-                if (request.status === 200) {
-                    var contentType = request.getResponseHeader('content-type')
-                    var tx = request.responseText
-                    //if (contentType.indexOf('/json') > -1) {
-                    //    resolve(JSON.parse(tx))
-                    //} else{
-                    resolve(tx)
-                    //}
-                } else {
-                    reject(request.status);
-                }
-            }
+    request.onreadystatechange = function () {
+      if (request.readyState === 4) {
+        if (request.status === 200) {
+          var contentType = request.getResponseHeader('content-type')
+          var tx = request.responseText
+          //if (contentType.indexOf('/json') > -1) {
+          //    resolve(JSON.parse(tx))
+          //} else{
+          resolve(tx)
+          //}
+        } else {
+          reject(request.status);
         }
-        request.onerror = reject
-    })
+      }
+    }
+    request.onerror = reject
+  })
 }
 </script>
 </body>

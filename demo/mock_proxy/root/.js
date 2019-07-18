@@ -6,6 +6,6 @@ module.exports = {
         'Content-Type': 'text/html'
     },
     body: function (query, post) {
-        return fs.readFileSync('root/_index.html', 'utf-8')
+        return fs.readFileSync('./root/_index.html', 'utf-8')
     }
 }
