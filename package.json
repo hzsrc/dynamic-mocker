@@ -1,6 +1,6 @@
 {
   "name": "dynamic-mocker",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "scripts": {
     "dev": "node demo/client_preview/build/dev-server.js",
     "build": "node build/webpack.js",
