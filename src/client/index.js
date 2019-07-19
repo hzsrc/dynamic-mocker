@@ -3,6 +3,7 @@ import mockByData from '../mockByData'
 
 export default {
   setup(config, importJs) {
+    this._xhr = window.XMLHttpRequest
     window.XMLHttpRequest = MockXhr
     MockXhr.setup({
       find(custom) {
@@ -79,6 +80,9 @@ export default {
         })
       }
     })
+  },
+  cancel() {
+    window.XMLHttpRequest = this._xhr
   }
 }
 //
