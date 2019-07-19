@@ -30,7 +30,6 @@ function mockByData(config, mockData, req, fnResponse, byNextPath) {
         parseHeader(mockData, qs, post, req);
 
         config.beforeResponse && config.beforeResponse(mockData, req);
-        console.log('mock:\t' + req.url);
 
         if (mockData.delay)
           setTimeout(t => fnResponse(mockData.status, mockData.headers, mockData.body), mockData.delay)

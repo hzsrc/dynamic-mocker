@@ -25,6 +25,7 @@ export default {
           })
           .then(r => {
             var mockData = r.default || r
+            mockData = Object.assign({}, mockData)
             mockData.urlObj = urlObj
             return mockData.disabled && config.samePreview ? null : mockData
           })
@@ -52,12 +53,22 @@ export default {
 
               }
               callback(body)
+              this.data = body
             }
           }
         }
         return new Promise((resolve, reject) => {
           function fnResponse(status, headers, body) {
             resolve({ status, headers, body })
+
+            if (config.logData) {
+              try {
+                var bodyObj = JSON.parse(body)
+              } catch (e) {
+                bodyObj = body
+              }
+              console.log(urlObj.pathname, req, { status, headers, body: bodyObj })
+            }
           }
 
           function next() {

@@ -261,6 +261,13 @@ Util.extend(MockXMLHttpRequest.prototype, {
   // https://xhr.spec.whatwg.org/#the-setrequestheader()-method
   // Combines a header in author request headers.
   setRequestHeader: function (name, value) {
+    if (this._waitOpen) {
+      this._waitOpen.finally(this.setRequestHeader0.bind(this, name, value))
+    } else {
+      this.setRequestHeader0(name, value)
+    }
+  },
+  setRequestHeader0: function (name, value) {
     // 原生 XHR
     if (!this.match) {
       this.custom.xhr.setRequestHeader(name, value)
