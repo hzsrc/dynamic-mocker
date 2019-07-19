@@ -286,7 +286,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
   },
   _syncSend: function send(data) {
     var that = this
-    this.custom.options.body = data
+    this.custom.options.body = data || {}
 
     // 原生 XHR
     if (!this.match) {

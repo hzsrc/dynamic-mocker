@@ -51,7 +51,6 @@ export default {
               } catch (e) {
 
               }
-              console.log(222, custom.options)
               callback(body)
             }
           }

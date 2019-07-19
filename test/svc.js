@@ -33,17 +33,22 @@ exports.close = function (callback) {
   cps.forEach(childProcess => {
     childProcess.on('close', (code, signal) => {
       exited++
+      console.log('exited:', exited)
       if (exited === cps.length) {
         callback()
       }
     });
-    // childProcess.kill('SIGKILL')
+
+    //if (childProcess.stdin.writable) {
     childProcess.stdin.write('closeServer')
+    //} else{
+    //  childProcess.kill('SIGKILL')
+    //}
   })
 }
 
 function spawnExec(cmd, args, { onData, onErr }) {
-  var cp = spawn(cmd, args)
+  var cp = spawn(cmd, args, { studio: ['pipe', 'pipe', 'pipe'] })
   cp.stdout.on('data', onData);
 
   cp.stderr.on('data', onErr);

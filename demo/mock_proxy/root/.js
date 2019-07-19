@@ -1,11 +1,113 @@
 //本文件模拟根目录的响应数据（类似index.html的作用）
 var fs = require('fs')
 module.exports = {
-    disabled: 0,
-    headers: {
-        'Content-Type': 'text/html'
-    },
-    body: function (query, post) {
-        return fs.readFileSync('./root/_index.html', 'utf-8')
+  disabled: 0,
+  headers: {
+    'Content-Type': 'text/html'
+  },
+  body: function (query, post) {
+    return `
+<html>
+<body>
+<h5>Mock</h5>
+<table>
+    <tr>
+        <td>
+            <button onclick="getData('get', '/api/_func?id=11223')">mock: get</button>
+        </td>
+        <td>HTTP GET</td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="getData('post', '/api/_json?id=11223', {type:'test'})">mock: post, delay</button>
+        </td>
+        <td>HTTP POST with delayed</td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="getData('post', '/api/delete/' + (+new Date()))">mock: delete, pattern url</button>
+        </td>
+        <td>HTTP DELETE with pattern url: '/api/delete/:id'</td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="getData('options', '/api/delete/' + (+new Date()))">mock: options, pattern url</button>
+        </td>
+        <td>HTTP OPTIONS pattern url: '/api/delete/:id'</td>
+    </tr>
+    <tr>
+        <td><a href="/api/img"><img src="/api/img"/></a></td>
+        <td>Image</td>
+    </tr>
+    <tr>
+        <td><a href="api/attachment">download</a></td>
+        <td>Attachment</td>
+    </tr>
+</table>
+
+
+<hr/>
+<h5>Proxy</h5>
+<table>
+    <tr>
+        <td>
+            <button onclick="getData('get', '/s?wd=dynamic-mocker')">proxy to baidu search</button>
+        </td>
+        <td>Proxy to https://www.baidu.com</td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="getData('get', '/users/hzsrc/starred')">proxy to github</button>
+        </td>
+        <td>Proxy to https://api.github.com</td>
+    </tr>
+</table>
+<hr/>
+<a id="url"></a>
+<textarea id="ret" rows="26" style="width: 100%"></textarea>
+<script>
+function getData(method, url, data, type) {
+    var a = document.getElementById('url')
+    a.href = a.innerText = location.origin + url
+    var ret = document.getElementById('ret')
+    ret.value = 'loading...'
+    if (data) {
+        data = JSON.stringify(data)
     }
+    return ajax(method, url, data).then(json => {
+        ret.value = typeof json === 'string' ? json : JSON.stringify(json, null, 4)
+    }).catch(t => {
+        ret.value = t
+    })
+}
+
+function ajax(method, url, data) {
+    return new Promise((resolve, reject) => {
+        var request = new XMLHttpRequest();
+        request.open(method, url);
+        request.send(data);
+
+        request.onreadystatechange = function () {
+            if (request.readyState === 4) {
+                if (request.status === 200) {
+                    var contentType = request.getResponseHeader('content-type')
+                    var tx = request.responseText
+                    //if (contentType.indexOf('/json') > -1) {
+                    //    resolve(JSON.parse(tx))
+                    //} else{
+                    resolve(tx)
+                    //}
+                } else {
+                    reject(request.status);
+                }
+            }
+        }
+        request.onerror = reject
+    })
+}
+</script>
+</body>
+</html>
+`
+  }
 }

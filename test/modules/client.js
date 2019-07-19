@@ -8,12 +8,12 @@ client.setup(config, pathname => new Promise((resolve, reject) => {
   resolve(require('../../demo/mock_proxy/root' + pathname + '.js'))
 }))
 
-
-http.axios = {
-  options(url) {
-    return http('options', url)
+http.axios = {}
+'get,put,post,delete,options'.split(',').map(method => {
+  http.axios[method] = function (url, data) {
+    return http('options', url, data)
   }
-}
+})
 
 run(http)
 
