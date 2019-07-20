@@ -2,9 +2,7 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = function (absConfigFile, config) {
-  var genClientJs = config.genClientJs
-  if (genClientJs) {
-    var ifTrueName = typeof genClientJs === 'string' ? genClientJs : 'isPreivew'
+  if (config.genClientJs) {
     var mockPathOrArr = config.mockPath
     var mockConfigDir = path.dirname(absConfigFile)
     var configFile = path.basename(absConfigFile)
@@ -13,14 +11,10 @@ module.exports = function (absConfigFile, config) {
 
     var js = `/* eslint-disable */
 
-/* IFTRUE_${ifTrueName} */
-
 import mockClient from 'dynamic-mocker/lib/client'
 import config from './${configFile}'
 
 mockClient.setup(config, pathname => ${importJs})
-
-/* FITRUE_${ifTrueName} */
 `
 
     fs.writeFile(targetFile, js, e => 0)
