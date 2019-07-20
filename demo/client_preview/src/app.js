@@ -1,3 +1,3 @@
 // import mockClient from '../../../lib/client'
 
-import '../../mock_proxy/mockClient'
+import './utils/mockClient'
