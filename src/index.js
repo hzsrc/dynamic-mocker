@@ -2,82 +2,95 @@ var getConfig = require('./getConfig.js')
 var byMock = require('./byMock.js')
 var byProxy = require('./byProxy.js')
 var byStatic = require('./byStatic.js')
+var WatchConfig = require('./watchConfig')
+var genClientJs = require('./genClientJs');
 
-var config, server;
+function DynamicMocker(configOrConfigFile, handler) {
+  var server;
+  var proxy;
+  var watcher
+  var config
 
 
-function onHandle(req, res) {
-  // var handleStack = [byMock, byProxy, byStatic, show404]
-  // var next = function () {
-  //     var handle = handleStack.splice(0, 1)
-  //     handle(res, req, next)
-  // }
-  // next()
-  byMock(req, res, () => {
-    byProxy(req, res, () => {
-      byStatic(req, res, () => {
-        show404(req, res)
+  this.server = start()
+  this.close = close
+  this.config = config
+  genClientJs(config)
+
+  function start() {
+    config = getConfig(configOrConfigFile, true)
+    watcher = new WatchConfig()
+    watcher.watch(config, restart)
+
+    var createServer = require('./create-server.js')
+    process.title = 'dynamic-mocker';
+    console.log('Current path: ' + process.cwd()
+      + '\nMock root path: ' + config.mockPath
+      + '\nProxy target: ' + config.proxyTarget
+    );
+    server = createServer(config.isHttps, config.port, handler || onHandle);
+    return server
+  }
+
+  function onHandle(req, res) {
+    byMock(config, req, res, () => {
+      proxy = byProxy(config, proxy, req, res, () => {
+        byStatic(config, req, res, () => {
+          show404(req, res)
+        })
       })
     })
-  })
-}
-
-
-function start(configOrConfigFile, handler) {
-  config = getConfig(configOrConfigFile, restart, true)
-  var createServer = require('./create-server.js')
-  process.title = 'dynamic-mocker';
-  console.log('Current path: ' + process.cwd()
-        + '\nMock root path: ' + config.mockPath
-        + '\nProxy target: ' + config.proxyTarget
-  );
-  return server = createServer(config.isHttps, config.port, handler || onHandle);
+  }
 
 
   function restart() {
     close()
     start(configOrConfigFile)
   }
-}
 
-function close() {
-  if (server) {
-    server.close();
-    server = null
-  }
-  config.closeWatcher()
-}
-
-function checkStart(configFile, handler) {
-  console.log('checkStart() is deprecated by start()')
-  start(configFile, handler)
-}
-
-function show404(req, res) {
-  var resp = {
-    headers: {
-      'Content-Type': 'text/html'
+  function close() {
+    if (server) {
+      server.close();
+      server = null
     }
+    if (proxy) {
+      proxy.close()
+    }
+    watcher.close()
   }
-  config.beforeResponse && config.beforeResponse(resp, req);
-  res.writeHead(404, resp.headers);
-  res.end('NOT FOUND:\t' + req.url + '<br/><hr/><i>dynamic-mocker</i>');
+
+  function show404(req, res) {
+    var resp = {
+      headers: {
+        'Content-Type': 'text/html'
+      }
+    }
+    config.beforeResponse && config.beforeResponse(resp, req);
+    res.writeHead(404, resp.headers);
+    res.end('NOT FOUND:\t' + req.url + '<br/><hr/><i>dynamic-mocker</i>');
+  }
+
+
+  //当子线程send的时候触发此方法
+  // process.stdin.on('data', function (msg) {
+  //   if (msg.toString() === 'closeMockServer') {
+  //     // console.log('EXIT by closeMockServer')
+  //     close()
+  //     process.exit(0)
+  //   }
+  // });
 }
 
 module.exports = {
-  start,
-  checkStart,
-  config,
-  byMock,
-  byProxy,
-  close,
-}
-
-//当子线程send的时候触发此方法
-process.stdin.on('data', function (msg) {
-  if (msg.toString() === 'closeServer') {
-    // console.log('EXIT by closeServer')
-    close()
-    process.exit(0)
+  Mocker: DynamicMocker,
+  start(configOrConfigFile, handler) {
+    this._instance = new DynamicMocker(configOrConfigFile, handler)
+    this.config = this._instance.config
+    return this._instance.server
+  },
+  close() {
+    if (this._instance) {
+      this._instance.close()
+    }
   }
-});
+}

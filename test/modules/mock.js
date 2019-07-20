@@ -24,7 +24,7 @@ function run(http) {
       expect(res.data).toMatchObject({
         ok: true
       })
-      expect(new Date() - start).toBeGreaterThanOrEqual(2000)
+      expect(new Date() - start).toBeGreaterThanOrEqual(500)
     })
   })
 
@@ -38,7 +38,7 @@ function run(http) {
 
   test('mock html', () => {
     return http('get', 'http://localhost:8037/').then(res => {
-      expect(res).toMatch(/<h5>Mock<\/h5>/)
+      expect(res.data || res).toMatch(/<h5>Mock<\/h5>/)
     })
   })
 }

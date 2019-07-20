@@ -24,7 +24,7 @@ test('https mock json delayed', () => {
     expect(res.data).toMatchObject({
       ok: true
     })
-    expect(new Date() - start).toBeGreaterThanOrEqual(2000)
+    expect(new Date() - start).toBeGreaterThanOrEqual(500)
   })
 })
 

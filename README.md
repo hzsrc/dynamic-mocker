@@ -49,13 +49,13 @@ npm run static
 			return true
 		},
 		beforeResponse: function (respData, req) { //数据返回前的回调钩子，respData包含status、headers、body属性
-			respData.headers['Access-Control-Allow-Origin'] = req.headers['origin'] || req.headers['Origin'];
-			respData.headers['Access-Control-Allow-Credentials'] = 'true';
-			respData.headers['Access-Control-Max-Age'] = '600';
-			respData.headers['Access-Control-Allow-Headers'] = 'Content-Type,Content-Length,Authorization,Access,X-Requested-With,yxt-token';
-			//respData.headers["Access-Control-Allow-Methods"] = "PUT,POST,GET,DELETE,PATCH,OPTIONS";
-	
-			respData.headers['P3P'] = 'CP="CAO PSA OUR"';
+			respData.headers['access-control-allow-origin'] = req.headers['origin'] || req.headers['Origin'] || '';
+            respData.headers['access-control-allow-credentials'] = 'true';
+            respData.headers['access-control-allow-headers'] = req.headers['access-control-request-headers'] || req.headers['Access-Control-Request-Headers'] || '';
+            respData.headers['access-control-max-age'] = '6000';
+            respData.headers['access-control-allow-methods'] = 'PUT,POST,GET,DELETE,PATCH,OPTIONS';
+        
+            respData.headers['P3P'] = 'CP="CAO PSA OUR"';
 		}
 	}
 	module.exports = config;
@@ -63,34 +63,48 @@ npm run static
 
 Edit the mock-config.js options:
 ### mockEnabled
-	[true] to enable it
+true - to enable all mocks
 ### mockPath
-	the root path[s] of mock files. String or array of string.
+the root path[s] of mock files. String or array of string.
 ### proxyTarget
-	If there is no mock data file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy.
+If there is no mock data file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy. string or Function(urlPart)
 ### isHttps
-	[true] for https
+true - for https
 ### port
-	Port of the mock server
+Port of the mock server
 ### checkPath
-	A function to check a url which needs to mock or not. eg:
+A function to check a url which needs to mock or not. eg:
+
 	function (urlPath) {
 	    return urlPath.match(/\/api\//);
 	}
 ### beforeResponse
-	A function to do customized job before responding.respData contains [status、headers、body] properties. eg:
+A function to do customized job before responding.respData contains [status、headers、body] properties. eg:
+
 	function (respData, req) {
-	    respData.headers["Access-Control-Allow-Origin"] = req.headers["origin"] || req.headers["Origin"];
-	    respData.headers["Access-Control-Allow-Credentials"] = "true";
-	    respData.headers["Access-Control-Allow-Headers"] = "Content-Type,Content-Length,Authorization,Access,X-Requested-With,yxt_token";
-	    //respData.headers["Access-Control-Allow-Methods"] = "PUT,POST,GET,DELETE,PATCH,OPTIONS";
+	        respData.headers['access-control-allow-origin'] = req.headers['origin'] || req.headers['Origin'] || '';
+            respData.headers['access-control-allow-credentials'] = 'true';
+            respData.headers['access-control-allow-headers'] = req.headers['access-control-request-headers'] || req.headers['Access-Control-Request-Headers'] || '';
+            respData.headers['access-control-max-age'] = '6000';
+            respData.headers['access-control-allow-methods'] = 'PUT,POST,GET,DELETE,PATCH,OPTIONS';
+        
+            respData.headers['P3P'] = 'CP="CAO PSA OUR"';
 	}
 
+### genClientJs
+String type. To generate a js file for client preview, like: '../client_preview/src/utils/mockClient.js'. Then you can import this js for client preview, which means run your webpages without backend apis, just with mock datas.
+
+### samePreview
+default: false, ignore all `disabled` and `mockEnabled` option while client preview. true - do not ignore
+
+### logData
+default: false. true - print mock data while client preview.
+
 ## 4. Add script to package.json
-	"scripts": {
-		...
-	    "mock": node -e "require('dynamic-mocker').checkStart('./mock/mock-config.js')"
-	}
+    "scripts": {
+        ...
+        "mock": node -e "require('dynamic-mocker').start('./mock/mock-config.js')"
+    }
 ## 5. Start mock server
 	npm run mock
 

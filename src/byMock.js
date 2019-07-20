@@ -2,11 +2,10 @@ var path = require('path')
 var fs = require('fs')
 var url = require('url')
 var querystring = require('querystring')
-var getConfig = require('./getConfig.js')
 var mockByData = require('./mockByData.js')
 
-function byMock(req, res, next) {
-  var config = getConfig()
+
+function byMock(config, req, res, next) {
   if (config.mockEnabled) {
     var urlPart = url.parse(req.url);
     req.query = querystring.parse(urlPart.query) //暂存备用
@@ -22,13 +21,13 @@ function byMock(req, res, next) {
       var byNextPath = function () {
         i++;
         if (i < paths.length) {
-          var mockFile = path.join(paths[i], pathname + '.js');
+          var mockFile = path.join(config.relativePath, paths[i], pathname + '.js');
           if (fs.existsSync(mockFile)) {
             //模拟数据，从mock文件夹获取
             mockByFile(config, req, res, mockFile, byNextPath);
           } else {
             // 像`/api/delete/[id]`，这样的动态url走 `__DEFAULT.js`，设置query.ThisUrlPart=[id]
-            mockFile = path.join(paths[i], path.dirname(pathname), '__DEFAULT.js');
+            mockFile = path.join(config.relativePath, paths[i], path.dirname(pathname), '__DEFAULT.js');
             if (fs.existsSync(mockFile)) {
               req.query.ThisUrlPart = path.basename(pathname)
               mockByFile(config, req, res, mockFile, byNextPath);
@@ -51,7 +50,7 @@ function byMock(req, res, next) {
 
 //使用js文件模拟内容输出
 function mockByFile(config, req, res, mockFile, byNextPath) {
-  var fullMockFile = path.resolve(mockFile);
+  var fullMockFile = path.resolve(config.relativePath, mockFile);
   var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(fullMockFile) + ';return module.exports})()';
   //delete require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
   var responseFn = function (status, headers, body) {
@@ -92,3 +91,4 @@ function readPost(req, callback) {
 }
 
 module.exports = byMock
+

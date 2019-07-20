@@ -1,16 +1,13 @@
 var fs = require('fs');
-var getConfig = require('./getConfig.js')
-var config;
 var mime = require('mime')//引入mime模块
 var url = require('url')
 var path = require('path')
 
-function byStatic(req, res, next) {
-  config = getConfig()
+function byStatic(config, req, res, next) {
   var urlPart = url.parse(req.url);
   if (config.static) {
     var pathname = urlPart.pathname;
-    var staticFile = path.join(config.static.path, pathname);
+    var staticFile = path.join(config.relativePath, config.static.path, pathname);
     if (fs.existsSync(staticFile)) {
       if (fs.statSync(staticFile).isDirectory()) {
         staticFile = path.join(staticFile, urlPart.index || 'index.html');
@@ -40,3 +37,5 @@ function staticByFile(req, res, staticFile) {
 }
 
 module.exports = byStatic
+
+

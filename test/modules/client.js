@@ -28,15 +28,18 @@ function http(method, url, data) {
       if (request.readyState === 4) {
         if (request.status === 200) {
           var data = request.responseText
-          var contentType = request.getResponseHeader('content-type')
+          var contentType = request.getResponseHeader('content-type') || ''
           if (contentType.indexOf('/json') > -1) {
-            data = JSON.parse(data)
-            data = data && data.data
+            try {
+              data = JSON.parse(data)
+              data = data && data.data
+            } catch (e) {
+            }
           }
           resolve({
             status: request.status,
             data,
-            headers: request.getAllResponseHeaders()
+            headers: toHeaderObj(request.getAllResponseHeaders())
           })
         } else {
           /*eslint-disable-next-line*/
@@ -46,4 +49,13 @@ function http(method, url, data) {
     }
     request.onerror = reject
   })
+}
+
+function toHeaderObj(str) {
+  var r = {}
+  str.split(/\r\n/g).map(item => {
+    var ns = item.split(/\:\s*/g)
+    r[ns[0].toLowerCase()] = ns[1]
+  })
+  return r
 }

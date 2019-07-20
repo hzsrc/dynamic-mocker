@@ -1,11 +1,11 @@
 var path = require('path');
 var fs = require('fs');
 
-module.exports = function (absConfigFile, config) {
-  if (config.genClientJs) {
-    var mockConfigDir = path.dirname(absConfigFile)
+module.exports = function (config) {
+  if (config.genClientJs && config.absConfigFile) {
+    var mockConfigDir = path.dirname(config.absConfigFile)
     var targetPathName = path.join(mockConfigDir, config.genClientJs)
-    var relConfigFile = path.relative(path.dirname(targetPathName), absConfigFile).replace(/\\/g, '/')
+    var relConfigFile = path.relative(path.dirname(targetPathName), config.absConfigFile).replace(/\\/g, '/')
     var relConfigPath = path.posix.dirname(relConfigFile)
     var importJs = getImportJs(config.mockPath, relConfigPath);
 

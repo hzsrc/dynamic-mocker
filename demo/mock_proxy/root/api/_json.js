@@ -1,6 +1,6 @@
 module.exports = {
   disabled: 0,
-  delay: 2000,
+  delay: 500,
   status: 200,
   headers: {
     server: 'dynamic-mocker',
