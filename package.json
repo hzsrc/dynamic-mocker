@@ -1,6 +1,6 @@
 {
   "name": "dynamic-mocker",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "scripts": {
     "dev": "node demo/client_preview/build/dev-server.js",
     "build": "node build/webpack.js",
@@ -10,7 +10,7 @@
     "preview": "node demo/client_preview/build/build.js",
     "test": "jest",
     "fixlint": "eslint --fix --ext .js src demo build test",
-    "prepublish": "npm run fixlint && npm run build"
+    "prepublish": "npm run fixlint && npm test && npm run build"
   },
   "dependencies": {
     "http-proxy": "^1.12.0",
