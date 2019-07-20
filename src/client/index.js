@@ -5,9 +5,10 @@ export default {
   setup(config, importJs) {
     this._xhr = window.XMLHttpRequest
     window.XMLHttpRequest = MockXhr
+    if (!config.samePreview) config.mockEnabled = true
     MockXhr.setup({
       find(custom) {
-        if (!config.mockEnabled && config.samePreview) {
+        if (!config.mockEnabled) {
           // 返回null走实际的ajax
           return null
         }
@@ -28,7 +29,10 @@ export default {
             var mockData = r.default || r
             mockData = Object.assign({}, mockData)
             mockData.urlObj = urlObj
-            return mockData.disabled && config.samePreview ? null : mockData
+            if (!config.samePreview) {
+              mockData.disabled = false
+            }
+            return mockData.disabled ? null : mockData
           })
           .catch(e => {
             return null

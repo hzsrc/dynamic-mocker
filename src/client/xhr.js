@@ -255,7 +255,7 @@ Util.extend(MockXMLHttpRequest.prototype, {
       that.readyState = MockXMLHttpRequest.OPENED
       that.dispatchEvent(new Event('readystatechange' /*, false, false, that*/))
 
-      this._waitOpen = null
+      that._waitOpen = null
     }
   },
   // https://xhr.spec.whatwg.org/#the-setrequestheader()-method
