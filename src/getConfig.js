@@ -1,24 +1,26 @@
-var path = require('path'); var fs = require('fs');
+var path = require('path');
+var fs = require('fs');
+var genClientJs = require('./genClientJs');
 var config;
 var watcher;
 var timeHd = 0;
 
 var _initPath = process.cwd()
+
 //启动服务
 function getConfig(configOrConfigFile, restart, forceReload) {
   if (!config || forceReload) {
     if (typeof configOrConfigFile === 'string') {
-      process.chdir(_initPath)
-      configOrConfigFile = path.resolve(configOrConfigFile);
-      delete require.cache[configOrConfigFile];
-      config = require(configOrConfigFile);
+      var absFile = path.resolve(_initPath, configOrConfigFile);
+      delete require.cache[absFile];
+      config = require(absFile);
 
       //切换当前目录
-      process.chdir(path.dirname(configOrConfigFile))
+      process.chdir(path.dirname(absFile))
 
       watchConfig();
-    }
-    else {
+      genClientJs(absFile, config)
+    } else {
       config = configOrConfigFile
     }
   }
@@ -28,7 +30,7 @@ function getConfig(configOrConfigFile, restart, forceReload) {
   function watchConfig() {
     config.closeWatcher = closeWatcher
     closeWatcher()
-    watcher = fs.watch(configOrConfigFile, type => {
+    watcher = fs.watch(absFile, type => {
       clearTimeout(timeHd)
       timeHd = setTimeout(() => {
         closeWatcher()

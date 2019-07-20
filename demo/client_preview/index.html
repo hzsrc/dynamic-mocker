@@ -91,7 +91,7 @@ function ajax(method, url, data) {
           resolve(tx)
           //}
         } else {
-          reject(request.status);
+          reject(new Error('Error with status: ' + request.status));
         }
       }
     }
