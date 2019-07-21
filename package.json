@@ -52,7 +52,7 @@
   "author": {
     "name": "HuangZheng"
   },
-  "description": "Mock ajax datas, or proxy to real server, or mock browser preview data",
+  "description": "A dynamic \"mock + proxy\" server and client mocker",
   "email": "hz932@qq.com",
   "license": "Mit",
   "main": "src/index.js",
