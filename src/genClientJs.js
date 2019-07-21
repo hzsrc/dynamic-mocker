@@ -14,7 +14,8 @@ module.exports = function (config) {
     var js = `/* eslint-disable */
 
 import mockClient from 'dynamic-mocker/lib/client.js'
-import config from './${relConfigFile}'
+
+var config = require('./${relConfigFile}')
 
 mockClient.setup(config, {
 ${importJs}
