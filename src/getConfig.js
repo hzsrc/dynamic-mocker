@@ -9,7 +9,7 @@ module.exports = function getConfig(configOrConfigFile, forceReload) {
 
       //切换当前目录
       // process.chdir(path.dirname(absFile))
-      config.relativePath = path.resolve(process.cwd(), path.dirname(configOrConfigFile))
+      config.relativePath = path.resolve(path.dirname(configOrConfigFile))
       config.absConfigFile = absConfigFile
 
     } else {

@@ -30,8 +30,14 @@ test('https mock json delayed', () => {
 
 
 test('https mock json options', () => {
-  return http.axios.options('https://localhost/').then(res => {
+  return http.axios.options('https://localhost/api/_json').then(res => {
     expect(res.headers['access-control-allow-credentials']).toMatch(/true/)
     expect(res.data).toMatch(/OPTIONS OK/)
+  })
+})
+
+test('https DELETE dynamic url', () => {
+  return http('delete', 'http://localhost:8037/api/delete/' + Math.random()).then(res => {
+    expect(res.data || res).toMatch(/successfully deleted/)
   })
 })

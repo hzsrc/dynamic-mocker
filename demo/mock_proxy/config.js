@@ -37,6 +37,6 @@ const config = {
   // },
   samePreview: false, // true - mock预览时disabled开关也生效（默认false,预览时忽略所有开关）
   logData: true, // mock预览时打印模拟数据
-  genClientJs: '../client_preview/src/utils/mockClient.js', // 生成mockClient.js
+  // genClientJs: '../client_preview/src/utils/mockClient.js', // 生成mockClient.js, 默认在配置文件所在的目录
 }
 module.exports = config;

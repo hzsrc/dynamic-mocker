@@ -7,6 +7,6 @@ const config = {
     return 'http://localhost:8037'
   },
   isHttps: true, // 是否https
-  port: 80 // 端口
+  port: 443 // 端口
 }
 module.exports = config

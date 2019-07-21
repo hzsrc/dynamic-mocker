@@ -92,5 +92,9 @@ module.exports = {
     if (this._instance) {
       this._instance.close()
     }
+  },
+  genClient(configFile) {
+    var config = getConfig(configFile, true)
+    genClientJs(config)
   }
 }

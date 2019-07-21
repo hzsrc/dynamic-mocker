@@ -1,12 +1,7 @@
-import client from '../../src/client'
-import XMLHttpRequest from '../../src/client/xhr'
-import { run } from './mock'
+import XMLHttpRequest from '../src/client/xhr'
+import { run } from './modules/mock'
 
-const config = require('../../demo/mock_proxy/config')
-
-client.setup(config, pathname => new Promise((resolve, reject) => {
-  resolve(require('../../demo/mock_proxy/root' + pathname + '.js'))
-}))
+import '../demo/client_preview/src/utils/mockClient'
 
 http.axios = {}
 'get,put,post,delete,options'.split(',').map(method => {
@@ -15,7 +10,7 @@ http.axios = {}
   }
 })
 
-run(http)
+run(http, 'client-')
 
 
 function http(method, url, data) {

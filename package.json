@@ -9,6 +9,7 @@
     "static": "node ./run.js demo/static_svc/config-static.js",
     "preview": "node demo/client_preview/build/build.js",
     "test": "jest",
+    "mock-gen": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
     "fixlint": "eslint --fix --ext .js src demo build test",
     "prepublish": "npm run fixlint && npm test && npm run build"
   },
@@ -42,6 +43,7 @@
     "eslint-plugin-standard": "4.0.0",
     "eslint-plugin-vue": "^5.2.3",
     "express": "^4.17.1",
+    "glob": ">7.0.0",
     "jest": "^24.8.0",
     "webpack": "^4.35.3",
     "webpack-dev-middleware": "^3.7.0",

@@ -1,6 +1,7 @@
 # dynamic-mocker
-A dynamic "mock + proxy" server for front-end development.
-Please see the [sample project](https://github.com/hzsrc/dynamic-mocker-sample) in source code.
+A dynamic "mock + proxy" server and client mocker.
+
+Please see the [sample usage](https://github.com/hzsrc/dynamic-mocker/tree/master/demo) in source code.
 
 ![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker.png)
 ![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker-en.png)
@@ -56,7 +57,10 @@ npm run static
             respData.headers['access-control-allow-methods'] = 'PUT,POST,GET,DELETE,PATCH,OPTIONS';
         
             respData.headers['P3P'] = 'CP="CAO PSA OUR"';
-		}
+		},
+		// samePreview: false,
+		logData: true,
+		// genClientJs: '../src/utils/mockClient.js',
 	}
 	module.exports = config;
 ###
