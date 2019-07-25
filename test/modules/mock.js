@@ -30,7 +30,6 @@ function run(http, prefix) {
 
     test(prefix + 'mock json options', () => {
         return http.axios.options('http://localhost:8037/api/_json').then(res => {
-            console.log(222, prefix + 'mock json options', res.headers)
             expect(res.headers['access-control-allow-credentials']).toMatch(/true/)
             expect(res.data).toMatch(/OPTIONS OK/)
         })
