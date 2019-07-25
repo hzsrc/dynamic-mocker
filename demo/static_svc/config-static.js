@@ -8,6 +8,6 @@ const config = {
         path: './root'
     },
     isHttps: false, // 是否https
-    port: 80 // 端口
+    port: 8010 // 端口
 }
 module.exports = config
