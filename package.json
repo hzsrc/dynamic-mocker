@@ -1,71 +1,72 @@
 {
-  "name": "dynamic-mocker",
-  "version": "1.2.9",
-  "scripts": {
-    "dev": "node demo/client_preview/build/dev-server.js",
-    "build": "node build/webpack.js",
-    "mock": "node run.js demo/mock_proxy/config.js",
-    "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
-    "static": "node ./run.js demo/static_svc/config-static.js",
-    "preview": "node demo/client_preview/build/build.js",
-    "test": "jest",
-    "mock-gen": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
-    "fixlint": "eslint --fix --ext .js src demo build test",
-    "prepublish": "npm run fixlint && npm test && npm run build"
-  },
-  "dependencies": {
-    "http-proxy": "^1.12.0",
-    "mime": "^2.4.4"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/plugin-syntax-jsx": "^7.2.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
-    "@babel/plugin-transform-runtime": "^7.4.4",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-stage-2": "^7.0.0",
-    "@babel/register": "^7.4.4",
-    "@babel/runtime": "^7.4.5",
-    "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
-    "@vue/babel-plugin-transform-vue-jsx": "^1.0.0",
-    "autoprefixer": "^9.6.0",
-    "axios": "^0.19.0",
-    "babel-eslint": "^10.0.2",
-    "babel-loader": "^8.0.6",
-    "core-js": "^3.1.4",
-    "eslint": "^5.16.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-friendly-formatter": "4.0.1",
-    "eslint-plugin-import": "2.18.0",
-    "eslint-plugin-node": "9.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "4.0.0",
-    "eslint-plugin-vue": "^5.2.3",
-    "express": "^4.17.1",
-    "glob": ">7.0.0",
-    "jest": "^24.8.0",
-    "webpack": "^4.35.3",
-    "webpack-dev-middleware": "^3.7.0",
-    "webpack-hot-middleware": "^2.25.0"
-  },
-  "author": {
-    "name": "HuangZheng"
-  },
-  "description": "A dynamic \"mock + proxy\" server and client mocker",
-  "email": "hz932@qq.com",
-  "license": "Mit",
-  "main": "src/index.js",
-  "files": [
-    "src",
-    "lib",
-    "ssl"
-  ],
-  "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
-  },
-  "publishConfig": {
-    "registry": "http://registry.npmjs.org"
-  }
+    "name": "dynamic-mocker",
+    "version": "1.2.10",
+    "scripts": {
+        "dev": "node demo/cl`ient_preview/build/dev-server.js",
+        "build": "node build/webpack.js",
+        "mock": "node run.js demo/mock_proxy/config.js",
+        "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
+        "static": "node ./run.js demo/static_svc/config-static.js",
+        "preview": "node demo/client_preview/build/build.js",
+        "test": "jest",
+        "mock-gen": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
+        "fixlint": "eslint --fix --ext .js src demo build test",
+        "prepublish": "npm run fixlint && npm test && npm run build"
+    },
+    "dependencies": {
+        "http-proxy": "^1.12.0",
+        "mime": "^2.4.4"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.5",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@babel/plugin-syntax-jsx": "^7.2.0",
+        "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+        "@babel/plugin-transform-runtime": "^7.4.4",
+        "@babel/preset-env": "^7.4.5",
+        "@babel/preset-stage-2": "^7.0.0",
+        "@babel/register": "^7.4.4",
+        "@babel/runtime": "^7.4.5",
+        "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
+        "@vue/babel-plugin-transform-vue-jsx": "^1.0.0",
+        "autoprefixer": "^9.6.0",
+        "axios": "^0.19.0",
+        "babel-eslint": "^10.0.2",
+        "babel-loader": "^8.0.6",
+        "core-js": "^3.1.4",
+        "eslint": "^5.16.0",
+        "eslint-config-standard": "^12.0.0",
+        "eslint-friendly-formatter": "4.0.1",
+        "eslint-plugin-import": "2.18.0",
+        "eslint-plugin-node": "9.1.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "4.0.0",
+        "eslint-plugin-vue": "^5.2.3",
+        "express": "^4.17.1",
+        "glob": ">7.0.0",
+        "jest": "^24.8.0",
+        "webpack": "^4.35.3",
+        "webpack-dev-middleware": "^3.7.0",
+        "webpack-hot-middleware": "^2.25.0"
+    },
+    "author": {
+        "name": "HuangZheng"
+    },
+    "description": "A dynamic \"mock + proxy\" server and client mocker",
+    "email": "hz932@qq.com",
+    "license": "Mit",
+    "main": "src/index.js",
+    "files": [
+        "src",
+        "lib",
+        "ssl",
+        "run.js"
+    ],
+    "engines": {
+        "node": ">= 4.0.0",
+        "npm": ">= 3.0.0"
+    },
+    "publishConfig": {
+        "registry": "http://registry.npmjs.org"
+    }
 }

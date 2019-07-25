@@ -2,11 +2,11 @@
 // 用法原理：https://www.cnblogs.com/hz-blog/p/wechat-local-debug-domain.html
 
 const config = {
-  mockEnabled: false, // 设置mock失效，仅使用proxy功能
-  proxyTarget: function (urlPart) {
-    return 'http://localhost:8037'
-  },
-  isHttps: true, // 是否https
-  port: 443 // 端口
+    mockEnabled: false, // 设置mock失效，仅使用proxy功能
+    proxyTarget: function (urlPart) {
+        return 'http://localhost:8037'
+    },
+    isHttps: true, // 是否https
+    port: 443 // 端口
 }
 module.exports = config

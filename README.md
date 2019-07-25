@@ -212,3 +212,38 @@ default: false. true - print mock data while client preview.
             }
         }
     }
+
+--------
+
+# Mock client
+
+Mock data to run app in browser, using the same mock-data files.
+
+## Usage
+
+Once your run `dynamic-mocker` server in webpack or nodejs, you will get a `mockClient.js` in the same directory of the `dynamic-mocker` config file.    
+```
+- mock
+-- root
+-- mock-config.js
+-- mockClient.js
+```
+You only need to import this js file into your `app.js` entry file, then all the ajax request datas will be mocked if necessary.   
+(You can import this module with a condition such as a command argument, by [js-conditional-compile-loader](https://github.com/hzsrc/js-conditional-compile-loader))
+```js
+/* IFTRUE_isDemo */
+import '../../mock/mockClient'
+/* FITRUE_isDemo */
+
+```
+
+And you can toggle the ajax mode, by mock data or real api data.
+```js
+import dMockClient from 'dynamic-mocker/lib/client.js'
+
+if (needMock) {
+    dMockClient.setup()
+} else {
+    dMockClient.cancel()
+}
+```

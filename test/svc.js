@@ -1,15 +1,15 @@
 var Mocker = require('../src/index').Mocker
 var mockers = []
 exports.start = function () {
-  mockers.push(new Mocker('./demo/mock_proxy/config.js'))
-  mockers.push(new Mocker('./demo/proxy/config-proxy80.js'))
-  mockers.push(new Mocker('./demo/static_svc/config-static.js'))
+    mockers.push(new Mocker('./demo/mock_proxy/config.js'))
+    mockers.push(new Mocker('./demo/proxy/config-proxy80.js'))
+    mockers.push(new Mocker('./demo/static_svc/config-static.js'))
 }
 exports.close = function (cb) {
-  mockers.forEach(mocker => {
-    mocker.close()
-  })
-  setTimeout(cb, 1000)
+    mockers.forEach(mocker => {
+        mocker.close()
+    })
+    setTimeout(cb, 1000)
 }
 
 
