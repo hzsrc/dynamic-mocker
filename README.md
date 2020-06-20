@@ -3,8 +3,8 @@ A dynamic "mock + proxy" server and client mocker.
 
 Please see the [sample usage](https://github.com/hzsrc/dynamic-mocker/tree/master/demo) source code.
 
-![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker-en.png)
-![image](https://raw.githubusercontent.com/hzsrc/dynamic-mocker-sample/master/dynamic-mocker.png)
+![image](https://hzsrc.github.io/dynamic-mocker-sample/dynamic-mocker-en.png)
+![image](https://hzsrc.github.io/dynamic-mocker-sample/dynamic-mocker.png)
 
 # Live demos
 
