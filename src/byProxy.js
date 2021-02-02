@@ -9,7 +9,8 @@ function getProxyTarget(urlPart, proxyTarget) {
 }
 
 function getProxy(proxy) {
-    proxy = require('http-proxy').createProxyServer({});
+	var options = {followRedirects: true};
+    proxy = require('http-proxy').createProxyServer(options);
     proxy.on('error', function (err, req, res, target) {
         console.log('[ERROR]:' + (req && req.url) + '\t' + err.message)
         if(res) res.end(err.message);
