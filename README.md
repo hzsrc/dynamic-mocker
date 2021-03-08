@@ -71,7 +71,17 @@ true - to enable all mocks
 ### mockPath
 the root path[s] of mock files. String or array of string.
 ### proxyTarget
-If there is no mock data file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy. string or Function(urlPart)
+If there is no mock data file for a url request, the http pipe will be reversely proxied to this target server. If this is empty, then won't proxy. string or Function(urlPart). Sample:   
+```` js
+    proxyTarget(uri) {
+        if (uri.pathname.indexOf('/h5/') === 0) {
+            uri.pathname = uri.pathname.slice(3);
+            uri.setChanged(); // if pathname changed, set this
+            return 'http://localhost:9050'
+        }
+        return 'http://localhost:10900'
+    }
+````
 ### isHttps
 true - for https
 ### port
