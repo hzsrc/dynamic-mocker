@@ -2,7 +2,7 @@ module.exports = {
     disabled: 0,
     body: function (query, post, header, request) {
     //output log in the node console
-        console.log('post.type: ' + post.type)
+        //console.log('post.type: ' + post.type)
 
         //use queryString in url
         //use key word 'this', which point to the yaml root object
