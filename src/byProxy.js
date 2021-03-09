@@ -8,8 +8,8 @@ function getProxyTarget(urlPart, proxyTarget) {
     return proxyTarget
 }
 
-function getProxy(proxy) {
-    var options = { followRedirects: true };
+function getProxy(options) {
+    options = Object.assign({}, options);
     proxy = require('http-proxy').createProxyServer(options);
     proxy.on('error', function (err, req, res, target) {
         console.log('[ERROR]:' + (req && req.url) + '\t' + err.message)
@@ -22,7 +22,7 @@ function getProxy(proxy) {
 function proxyByWeb(config, proxy, req, res, next) {
     if (req.headers['proxy-connection']) {
         //代理服务器模式
-        if (!proxy) proxy = getProxy();
+        if (!proxy) proxy = getProxy(config.proxyOptions);
         console.log('proxy:\t=>\t' + req.url);
         req.headers['connection'] = req.headers['proxy-connection'];
         delete req.headers['proxy-connection'];
@@ -30,7 +30,7 @@ function proxyByWeb(config, proxy, req, res, next) {
         return proxy;
     }
     if (config.proxyTarget) {
-        if (!proxy) proxy = getProxy()
+        if (!proxy) proxy = getProxy(config.proxyOptions)
         var urlPart = url.parse(req.url);
         urlPart.setChanged = function (path) {
             this._changed = 1
@@ -41,7 +41,7 @@ function proxyByWeb(config, proxy, req, res, next) {
         }
         console.log('proxy:\t' + urlPart.pathname + '\t=>\t' + target + urlPart.pathname);
         //req.headers.host = url.parse(target).hostname; //不设置的话，远程用ip访问会出错
-        proxy.web(req, res, { target: target, changeOrigin: true });
+        proxy.web(req, res, { target: target });
         return proxy
     } else {
         next()
