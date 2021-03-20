@@ -8,7 +8,7 @@ function getProxyTarget(urlPart, proxyTarget) {
     return proxyTarget
 }
 
-function getProxy(options) {
+function getProxy(proxy, options) {
     options = Object.assign({}, options);
     proxy = require('http-proxy').createProxyServer(options);
     proxy.on('error', function (err, req, res, target) {
@@ -22,7 +22,7 @@ function getProxy(options) {
 function proxyByWeb(config, proxy, req, res, next) {
     if (req.headers['proxy-connection']) {
         //代理服务器模式
-        if (!proxy) proxy = getProxy(config.proxyOptions);
+        if (!proxy) proxy = getProxy(proxy, config.proxyOptions);
         console.log('proxy:\t=>\t' + req.url);
         req.headers['connection'] = req.headers['proxy-connection'];
         delete req.headers['proxy-connection'];
@@ -30,7 +30,7 @@ function proxyByWeb(config, proxy, req, res, next) {
         return proxy;
     }
     if (config.proxyTarget) {
-        if (!proxy) proxy = getProxy(config.proxyOptions)
+        if (!proxy) proxy = getProxy(proxy, config.proxyOptions)
         var urlPart = url.parse(req.url);
         urlPart.setChanged = function (path) {
             this._changed = 1
