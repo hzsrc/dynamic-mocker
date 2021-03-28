@@ -12,7 +12,7 @@ function byStatic(config, req, res, next) {
             if (fs.statSync(staticFile).isDirectory()) {
                 staticFile = path.join(staticFile, urlPart.index || 'index.html');
             }
-            staticByFile(req, res, staticFile);
+            staticByFile(req, res, staticFile, config);
         } else {
             next()
         }
@@ -21,17 +21,21 @@ function byStatic(config, req, res, next) {
     }
 }
 
-function staticByFile(req, res, staticFile) {
+function staticByFile(req, res, staticFile, config) {
     fs.readFile(staticFile, (err, data) => {
         if (err) {
             console.error(err)
             res.writeHead(500, {});
             res.end('Internal error');
         } else {
-            res.writeHead(200, {
-                'Content-type': mime.getType(staticFile) //通过后缀名指定mime类型
-            });
-            res.end(data);
+            var headers = {
+                'content-type': mime.getType(staticFile) //通过后缀名指定mime类型
+            }
+            var mockData = { body: data, headers: headers, resolved: 'static' }
+            if (config.beforeResponse) config.beforeResponse(mockData, req);
+
+            res.writeHead(200, mockData.headers);
+            res.end(mockData.body);
         }
     })
 }

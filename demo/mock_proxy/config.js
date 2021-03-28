@@ -8,6 +8,9 @@ const config = {
         }
         return 'https://api.github.com'
     }, //后台接口服务地址（代理目标），为空表示不代理
+    proxyOptions: {
+        changeOrigin: true
+    },
     isHttps: false, //是否https
     port: 8037, //端口
     // checkPath: function (urlPath) { //urlPath校验函数，返回true表示需要进行mock处理，为false直接走代理

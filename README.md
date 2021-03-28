@@ -104,6 +104,9 @@ A function to do customized job before responding.respData contains [status、he
         
             respData.headers['P3P'] = 'CP="CAO PSA OUR"';
 	}
+### proxyOptions
+Object type. Options which will be transferred to `http-proxy`, like `changeOrigin`, for more info:
+https://www.npmjs.com/package/http-proxy#options
 
 ### genClientJs
 String type. To generate a js file for client preview, like: '../client_preview/src/utils/mockClient.js'. Then you can import this js for client preview, which means run your webpages without backend apis, just with mock datas.

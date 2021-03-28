@@ -1,5 +1,5 @@
 import XMLHttpRequest from '../src/client/xhr'
-import { run } from './modules/mock'
+import { run } from './modules/mock-http.js'
 
 import '../demo/client_preview/src/utils/mockClient'
 

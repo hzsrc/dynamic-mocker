@@ -2,13 +2,14 @@
     "name": "dynamic-mocker",
     "version": "1.2.15",
     "scripts": {
-        "dev": "node demo/cl`ient_preview/build/dev-server.js",
+        "dev": "node demo/client_preview/build/dev-server.js",
         "build": "node build/webpack.js",
         "mock": "node run.js demo/mock_proxy/config.js",
         "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
         "static": "node ./run.js demo/static_svc/config-static.js",
         "preview": "node demo/client_preview/build/build.js",
         "test": "jest",
+        "test-svc": "node -e \"require('./test/svc.js').start()\"",
         "mock-gen": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
         "fixlint": "eslint --fix --ext .js src demo build test",
         "prepublish": "npm run fixlint && npm test && npm run build"

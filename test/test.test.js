@@ -4,6 +4,6 @@ const svc = require('./svc')
 beforeAll(svc.start)
 afterAll(svc.close)
 
-require('./modules/mock').default()
-require('./modules/proxy')
+require('./modules/mock-http').default()
+require('./modules/proxy-https')
 require('./modules/static')

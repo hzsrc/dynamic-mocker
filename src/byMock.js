@@ -51,15 +51,20 @@ function byMock(config, req, res, next) {
 //使用js文件模拟内容输出
 function mockByFile(config, req, res, mockFile, byNextPath) {
     var fullMockFile = path.resolve(config.relativePath, mockFile);
-    //var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(fullMockFile) + ';return module.exports})()';
-    delete require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
     var responseFn = function (status, headers, body) {
         res.writeHead(status, headers);
         return res.end(body);
     }
     try {
-        var mockData = require(fullMockFile) || {};
-        //var mockData = eval(js)
+        try {
+            // jest会覆盖当前的require，故需要global
+            delete global.require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
+            var mockData = global.require(fullMockFile) || {};
+            if (req.url.toString().indexOf('_func') > -1) console.log(1111111, typeof mockData.body)
+        } catch (e) {
+            var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(fullMockFile) + ';return module.exports})()';
+            mockData = eval(js)
+        }
         req.readReqData = readPost.bind(null, req)
         return mockByData(config, mockData, req, responseFn, byNextPath)
     } catch (e) {
