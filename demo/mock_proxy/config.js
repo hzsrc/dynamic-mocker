@@ -2,7 +2,6 @@ const config = {
     mockEnabled: true,
     mockPath: ['root'], //模拟文件根目录
     proxyTarget(urlPart) {
-        console.log(urlPart.path)
         if (urlPart.path.slice(0, 2) === '/s') {
             return 'https://www.baidu.com'
         }

@@ -60,7 +60,6 @@ function mockByFile(config, req, res, mockFile, byNextPath) {
             // jest会覆盖当前的require，故需要global
             delete global.require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
             var mockData = global.require(fullMockFile) || {};
-            if (req.url.toString().indexOf('_func') > -1) console.log(1111111, typeof mockData.body)
         } catch (e) {
             var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(fullMockFile) + ';return module.exports})()';
             mockData = eval(js)
