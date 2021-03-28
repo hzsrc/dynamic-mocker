@@ -10,7 +10,7 @@
         "preview": "node demo/client_preview/build/build.js",
         "test": "jest",
         "test-svc": "node -e \"require('./test/svc.js').start()\"",
-        "mock-gen": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
+        "generate": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
         "fixlint": "eslint --fix --ext .js src demo build test",
         "prepublish": "npm run fixlint && npm test && npm run build"
     },
