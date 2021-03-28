@@ -56,13 +56,15 @@ function mockByFile(config, req, res, mockFile, byNextPath) {
         return res.end(body);
     }
     try {
-        try {
-            // jest会覆盖当前的require，故需要global
-            delete global.require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
-            var mockData = global.require(fullMockFile) || {};
-        } catch (e) {
-            var js = '(function(){var exports={},module={exports:exports};' + fs.readFileSync(fullMockFile) + ';return module.exports})()';
-            mockData = eval(js)
+        var mockData;
+        if (typeof jest === 'object' && jest.isolateModules) {
+            // jest会覆盖当前的require，故需要isolate
+            jest.isolateModules(() => {
+                mockData = require(fullMockFile);
+            });
+        } else {
+            delete require.cache[fullMockFile]; //根据绝对路径，清空缓存的对象
+            mockData = require(fullMockFile) || {};
         }
         req.readReqData = readPost.bind(null, req)
         return mockByData(config, mockData, req, responseFn, byNextPath)
