@@ -117,6 +117,9 @@ default: false, ignore all `disabled` and `mockEnabled` option while client prev
 ### logData
 default: false. true - print mock data while client preview.
 
+### clientJsPath
+default: '/'. Set a path for ajax relative path which used for mock data in `mockClient.js`.
+
 ## 4. Add script to package.json
     "scripts": {
         ...
