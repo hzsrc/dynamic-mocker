@@ -4,4 +4,4 @@ taskkill /im node.exe
 %~d0
 cd %~dp0
 
-node index.js ./config.js
+node run.js ./config.js
