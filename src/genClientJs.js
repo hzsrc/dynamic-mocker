@@ -8,7 +8,7 @@ module.exports = function (config) {
         var mockConfigDir = path.dirname(config.absConfigFile)
         var targetPathName = path.join(mockConfigDir, config.genClientJs)
         var targetPath = path.resolve(path.dirname(targetPathName))
-        var importJs = getImportJs(config.mockPath, posixPath(mockConfigDir), posixPath(targetPath));
+        var importJs = getImportJs(config.mockPath, posixPath(mockConfigDir), posixPath(targetPath), config.clientJsPath);
         var relConfigFile = path.relative(path.dirname(targetPathName), config.absConfigFile).replace(/\\/g, '/')
 
         var js = `/* eslint-disable */
@@ -25,8 +25,9 @@ ${importJs}
     }
 }
 
-function getImportJs(mockPathOrArr, mockConfigDir, relConfigPath) {
+function getImportJs(mockPathOrArr, mockConfigDir, relConfigPath, clientJsPath) {
     var requires = [];
+    if (clientJsPath === undefined) clientJsPath = '/';
     [].concat(mockPathOrArr).map(p => {
         var rootDir = path.posix.join(mockConfigDir, p)
         var list = glob.sync(path.join(rootDir, '/**/*.js')).map(file => {
@@ -34,7 +35,7 @@ function getImportJs(mockPathOrArr, mockConfigDir, relConfigPath) {
             var jspath = pathname.slice(0, pathname.length - 3)
             var requirePath = path.posix.relative(relConfigPath, file)
             if (requirePath[0] !== '.') requirePath = './' + requirePath
-            return `  '/${jspath}': require('${requirePath}')`
+            return `  '${clientJsPath}${jspath}': require('${requirePath}')`
         })
         requires = requires.concat(list)
     })
