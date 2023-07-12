@@ -1,6 +1,6 @@
 {
     "name": "dynamic-mocker",
-    "version": "1.2.17",
+    "version": "1.2.18",
     "scripts": {
         "dev": "node demo/client_preview/build/dev-server.js",
         "build": "node build/webpack.js",
@@ -69,6 +69,6 @@
         "npm": ">= 3.0.0"
     },
     "publishConfig": {
-        "registry": "http://registry.npmjs.org"
+        "registry": "https://registry.npmjs.org"
     }
 }

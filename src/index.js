@@ -18,6 +18,7 @@ function DynamicMocker(configOrConfigFile, handler) {
     genClientJs(config)
 
     function start() {
+        close()
         config = getConfig(configOrConfigFile, true)
         watcher = new WatchConfig()
         watcher.watch(config, restart)
@@ -44,8 +45,7 @@ function DynamicMocker(configOrConfigFile, handler) {
 
 
     function restart() {
-        close()
-        start(configOrConfigFile)
+        start()
     }
 
     function close() {
@@ -55,8 +55,12 @@ function DynamicMocker(configOrConfigFile, handler) {
         }
         if (proxy) {
             proxy.close()
+            proxy = null
         }
-        watcher.close()
+        if (watcher) {
+            watcher.close()
+            watcher = null
+        }
     }
 
     function show404(req, res) {
