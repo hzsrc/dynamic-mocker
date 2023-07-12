@@ -46,7 +46,7 @@
         "eslint-plugin-vue": "^5.2.3",
         "express": "^4.17.3",
         "glob": ">7.0.0",
-        "jest": "^24.8.0",
+        "jest": "^29.6.1",
         "webpack": "^4.35.3",
         "webpack-dev-middleware": "^3.7.0",
         "webpack-hot-middleware": "^2.25.0"
