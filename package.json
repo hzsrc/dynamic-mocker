@@ -12,7 +12,7 @@
         "test-svc": "node -e \"require('./test/svc.js').start()\"",
         "generate": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
         "fixlint": "eslint --fix --ext .js src demo build test",
-        "prepublish": "npm run fixlint && npm test && npm run build"
+        "prepublishOnly": "npm run fixlint && npm test && npm run build"
     },
     "dependencies": {
         "http-proxy": "^1.18.1",
