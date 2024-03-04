@@ -39,7 +39,7 @@ function proxyByWeb(config, proxy, req, res, next) {
         if (urlPart._changed) {
             req.url = url.format(urlPart)
         }
-        console.log('proxy:\t' + urlPart.pathname + '\t=>\t' + target + urlPart.pathname);
+        console.log('proxy:\t' + urlPart.pathname + '\t=>\t' + target + (target[target.length - 1] === '/' ? '' : '/') + urlPart.pathname);
         //req.headers.host = url.parse(target).hostname; //不设置的话，远程用ip访问会出错
         proxy.web(req, res, { target: target });
         return proxy
