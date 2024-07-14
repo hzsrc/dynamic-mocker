@@ -24,7 +24,7 @@ function DynamicMocker(configOrConfigFile, handler) {
         watcher.watch(config, restart)
 
         var createServer = require('./create-server.js')
-        process.title = 'dynamic-mocker';
+        process.title = config.title || 'dynamic-mocker';
         console.log('Current path: ' + process.cwd()
             + '\nMock root path: ' + config.mockPath
             + '\nProxy target: ' + config.proxyTarget

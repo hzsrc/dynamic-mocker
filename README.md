@@ -61,6 +61,7 @@ npm run static
 		// samePreview: false,
 		logData: true,
 		// genClientJs: '../src/utils/mockClient.js',
+		title: 'App title'
 	}
 	module.exports = config;
 ###
@@ -119,6 +120,9 @@ default: false. true - print mock data while client preview.
 
 ### clientJsPath
 default: '/'. Set a path for ajax relative path which used for mock data in `mockClient.js`.
+
+### title
+set console window title.
 
 ## 4. Add script to package.json
     "scripts": {
