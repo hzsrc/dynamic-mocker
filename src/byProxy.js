@@ -19,7 +19,7 @@ function getProxy(proxy, options) {
 
 // 由JSP或ASP.Net、PHP服务处理
 function proxyByWeb(config, proxy, req, res, next) {
-    var options = Object.assign({}, config.proxyOptions);
+    var options = Object.assign({ ws: true }, config.proxyOptions);
     if (req.headers['proxy-connection']) {
         //代理服务器模式
         if (!proxy) proxy = getProxy(proxy, options);
@@ -48,7 +48,7 @@ function proxyByWeb(config, proxy, req, res, next) {
             // 只代理 Webpack HMR 的 WebSocket 请求
             if (req.url.match(wsUrlReg)) {
                 proxy.ws(req, socket, head, {
-                    target,
+                    target: target.replace(/^https?/, 'ws'),
                     ...options
                 });
             }
