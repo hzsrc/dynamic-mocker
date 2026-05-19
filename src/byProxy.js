@@ -1,6 +1,5 @@
 var url = require('url');
 
-
 function getProxyTarget(urlPart, proxyTarget) {
     if (typeof proxyTarget === 'function') {
         return proxyTarget(urlPart)
@@ -14,12 +13,29 @@ function getProxy(proxy, options) {
         console.log('[ERROR]:' + (req && req.url) + '\t' + err.message)
         if (res) res.end(err.message);
     });
+    proxy.on('proxyRes', function (proxyRes, req, res) {
+        // 监听客户端（浏览器）断开连接事件
+        req.on('close', destroy);
+        // 监听代理响应流异常关闭，避免残留
+        res.on('close', destroy);
+
+        function destroy() {
+            if (proxyRes && !proxyRes.destroyed) {
+                proxyRes.destroy(); // 强制释放与后端的连接
+            }
+        }
+    });
     return proxy
 }
 
 // 由JSP或ASP.Net、PHP服务处理
 function proxyByWeb(config, proxy, req, res, next) {
-    var options = Object.assign({ ws: true }, config.proxyOptions);
+    var options = Object.assign({
+        ws: true,
+        timeout: 60000, // 代理请求超时
+        proxyTimeout: 60000, // 后端响应超时
+        xfwd: true // 转发原始请求头，避免 HMR 丢失 host/origin
+    }, config.proxyOptions);
     if (req.headers['proxy-connection']) {
         //代理服务器模式
         if (!proxy) proxy = getProxy(proxy, options);
@@ -28,7 +44,11 @@ function proxyByWeb(config, proxy, req, res, next) {
         delete req.headers['proxy-connection'];
         proxy.web(req, res, { target: req.url });
         return proxy;
+    } else {
+        // 明确指定 keep-alive，避免代理层丢失导致后端误判
+        req.headers['connection'] = 'keep-alive';
     }
+
     if (config.proxyTarget) {
         if (!proxy) proxy = getProxy(proxy, options)
         var urlPart = url.parse(req.url);
@@ -40,22 +60,7 @@ function proxyByWeb(config, proxy, req, res, next) {
             req.url = url.format(urlPart)
         }
 
-        //webSocket特殊处理
-        var wsUrlReg = config.wsUrlReg || /__webpack_hmr/
-        //处理 WebSocket 升级请求
-        proxy.on('upgrade', (req, socket, head) => {
-            console.log('upgrade: ' + req.url)
-            // 只代理 Webpack HMR 的 WebSocket 请求
-            if (req.url.match(wsUrlReg)) {
-                proxy.ws(req, socket, head, {
-                    target: target.replace(/^https?/, 'ws'),
-                    ...options
-                });
-            }
-        });
-
-
-        console.log('proxy:\t' + urlPart.pathname + '\t=>\t' + target + urlPart.pathname);
+        console.log('proxy:\t' + urlPart.pathname + '\t=>\t' + target + urlPart.path);
         //req.headers.host = url.parse(target).hostname; //不设置的话，远程用ip访问会出错
         proxy.web(req, res, { target: target });
         return proxy
