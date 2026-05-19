@@ -1,5 +1,5 @@
-import MockXhr from './xhr'
-import mockByData from '../mockByData'
+var MockXhr = require('./xhr')
+var mockByData = require('../mockByData')
 
 export default {
     setup(config, mockDataMap) {
