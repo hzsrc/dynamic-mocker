@@ -19,9 +19,12 @@ var webpackConfig = {
             {
                 test: /\.js$/,
                 include: [resolve('../../src'), resolve('../../demo')],
-                use: [
-                    'babel-loader?cacheDirectory',
-                ],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: false
+                    }
+                },
             },
         ]
     },
