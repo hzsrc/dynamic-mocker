@@ -1,10 +1,15 @@
 var Mocker = require('../src/index').Mocker
 var mockers = []
+var __mockers_started__
 exports.start = function () {
+    if (__mockers_started__) return Promise.resolve()
+    __mockers_started__ = true
     mockers.push(new Mocker('./demo/mock_proxy/config.js'))
     mockers.push(new Mocker('./demo/proxy/config-proxy80.js'))
     mockers.push(new Mocker('./demo/static_svc/config-static.js'))
+    return new Promise(resolve => setTimeout(resolve, 500))
 }
+
 exports.close = function (cb) {
     mockers.forEach(mocker => {
         mocker.close()

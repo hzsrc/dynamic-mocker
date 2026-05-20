@@ -8,7 +8,7 @@
         "proxy80": "node ./run.js demo/proxy/config-proxy80.js",
         "static": "node ./run.js demo/static_svc/config-static.js",
         "preview": "node demo/client_preview/build/build.js",
-        "test": "jest",
+        "test": "jest --runInBand",
         "test-svc": "node -e \"require('./test/svc.js').start()\"",
         "generate": "node -e \"require('./').genClient('./demo/mock_proxy/config.js')\"",
         "fixlint": "eslint --fix --ext .js src demo build test",
@@ -17,7 +17,7 @@
     "dependencies": {
         "http-proxy": "^1.18.1",
         "mime": "^2.5.2",
-        "glob": "*"
+        "glob": "^7.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.23.3",
@@ -41,7 +41,6 @@
         "eslint-plugin-standard": "4.0.0",
         "eslint-plugin-vue": "^5.2.3",
         "express": "^4.17.3",
-        "glob": ">7.0.0",
         "jest": "^24.8.0",
         "webpack": "^5.106.2",
         "webpack-dev-middleware": "^5.3.4",

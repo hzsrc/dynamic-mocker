@@ -1,5 +1,13 @@
+/**
+ * @jest-environment jsdom
+ */
 import XMLHttpRequest from '../src/client/xhr'
 import { run } from './modules/mock-http.js'
+
+const svc = require('./svc')
+
+beforeAll(svc.start)
+afterAll(svc.close)
 
 import '../demo/client_preview/src/utils/mockClient'
 

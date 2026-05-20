@@ -1,4 +1,4 @@
-var MockXhr = require('./xhr')
+var MockXhr = require('./xhr').default
 var mockByData = require('../mockByData')
 
 export default {

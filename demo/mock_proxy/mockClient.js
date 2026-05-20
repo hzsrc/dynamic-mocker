@@ -10,5 +10,6 @@ mockClient.setup(config, {
   '/api/attachment': require('./root/api/attachment.js'),
   '/api/delete/__DEFAULT': require('./root/api/delete/__DEFAULT.js'),
   '/api/img': require('./root/api/img.js'),
-  '/api/token': require('./root/api/token.js')
+  '/api/token': require('./root/api/token.js'),
+  '/index': require('./root/index.js')
 })
