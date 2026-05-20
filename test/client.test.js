@@ -4,12 +4,12 @@
 import XMLHttpRequest from '../src/client/xhr'
 import { run } from './modules/mock-http.js'
 
+import '../demo/client_preview/src/utils/mockClient'
+
 const svc = require('./svc')
 
 beforeAll(svc.start)
 afterAll(svc.close)
-
-import '../demo/client_preview/src/utils/mockClient'
 
 http.axios = {}
 'get,put,post,delete,options'.split(',').map(method => {
