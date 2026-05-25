@@ -9,9 +9,15 @@ function getProxyTarget(urlPart, proxyTarget) {
 
 function getProxy(proxy, options) {
     proxy = require('http-proxy').createProxyServer(options);
-    proxy.on('error', function (err, req, res, target) {
+    proxy.on('error', function (err, req, res) {
         console.log('[ERROR]:' + (req && req.url) + '\t' + err.message)
-        if (res) res.end(err.message);
+        if (!res) return;
+        if (!res.headersSent) {
+            res.writeHead(502, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end('Bad Gateway: ' + err.message);
+        } else {
+            res.end('Err:\t' + err);
+        }
     });
     proxy.on('proxyRes', function (proxyRes, req, res) {
         // 监听客户端（浏览器）断开连接事件
